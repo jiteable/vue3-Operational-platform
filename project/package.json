@@ -8,7 +8,10 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "fix": "eslint src --fix",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "format": "prettier --write \"./**/*.{html,vue,ts,js,json,md}\"",
+    "lint:eslint": "eslint src/**/*.{ts,vue} --cache --fix",
+    "lint:style": "stylelint src/**/*.{css,scss,vue} --cache --fix"
   },
   "dependencies": {
     "vue": "^3.5.17"
@@ -30,7 +33,21 @@
     "eslint-plugin-prettier": "^5.5.1",
     "eslint-plugin-vue": "^10.2.0",
     "globals": "^16.2.0",
+    "postcss": "^8.5.6",
+    "postcss-html": "^1.8.0",
+    "postcss-scss": "^4.0.9",
     "prettier": "^3.6.2",
+    "sass": "^1.89.2",
+    "sass-loader": "^16.0.5",
+    "stylelint": "^16.21.0",
+    "stylelint-config-prettier": "^9.0.5",
+    "stylelint-config-recess-order": "^7.1.0",
+    "stylelint-config-recommended-scss": "^15.0.1",
+    "stylelint-config-standard": "^38.0.0",
+    "stylelint-config-standard-scss": "^15.0.1",
+    "stylelint-config-standard-vue": "^1.0.0",
+    "stylelint-order": "^7.0.0",
+    "stylelint-scss": "^6.12.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.0",
