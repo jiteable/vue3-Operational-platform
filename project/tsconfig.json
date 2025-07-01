@@ -1,15 +1,10 @@
 {
-  "files": [
-    {
-      "compilerOptions": {
-        // ...
-        "types": ["element-plus/global"]
-      }
-    }
-  ],
+  "compilerOptions": {
+    "types": ["element-plus/global"],
+    "composite": true,
+  },
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ],
-  
+  ]
 }
