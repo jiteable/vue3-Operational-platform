@@ -31,4 +31,11 @@ export default defineConfig({
       // 自定义插入位置
     })
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "@/styles/variable.scss" as *;'
+      }
+    }
+  }
 })
