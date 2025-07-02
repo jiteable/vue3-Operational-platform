@@ -9,7 +9,4 @@
 </template>
 
 <style scoped lang="scss">
-h1 {
-  color: $base-color;
-}
 </style>
