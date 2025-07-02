@@ -4,10 +4,7 @@
 
 <template>
   <div>
-    <h1>SVG测试</h1>
-    <SvgIcon name="data" />
-
-    <div>你好</div>
+    <router-view></router-view>
   </div>
 </template>
 
