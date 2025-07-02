@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import { defineProps } from 'vue'
 defineProps({
   //xlink:href属性值的前缀
   prefix: {
