@@ -1,10 +1,13 @@
 import { reqLogin, reqUserInfo } from '@/api/user'
-import type { loginForm } from '@/api/user/type'
+import type { loginForm, loginResponseData } from '@/api/user/type'
 import { defineStore } from 'pinia'
+import type { UserState } from './type/type'
+import { setToken, getToken } from '@/utils/token'
+
 
 const useUserStore = defineStore('User', {
-  state: () => ({
-    token: localStorage.getItem('token') || '',
+  state: (): UserState => ({
+    token: getToken() || '',
     username: '',
     avatar: '',
     roles: [] as string[],
@@ -16,10 +19,10 @@ const useUserStore = defineStore('User', {
     // 用户登录
     async userLogin(data: loginForm) {
       try {
-        const result = await reqLogin(data)
+        const result: loginResponseData = await reqLogin(data)
         if (result.code === 200) {
-          this.token = result.data.token
-          localStorage.setItem('token', result.data.token)
+          this.token = (result.data.token as string)
+          setToken(result.data.token as string)
           return 'ok'
         } else {
           return Promise.reject(new Error('登录失败'))
