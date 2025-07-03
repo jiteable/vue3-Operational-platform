@@ -15,5 +15,25 @@ const router = createRouter({
   }
 })
 
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+
+  // 如果访问登录页，直接放行
+  if (to.path === '/login') {
+    next()
+    return
+  }
+
+  // 如果没有 token，重定向到登录页
+  if (!token) {
+    next('/login')
+    return
+  }
+
+  // 有 token，放行
+  next()
+})
+
 
 export default router

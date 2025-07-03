@@ -2,17 +2,25 @@
 import axios from "axios";
 
 const request = axios.create({
-
   baseURL: import.meta.env.VITE_APP_BASE_API,//基础路径上会携带/api
   timeout: 5000,//超时时间
 })
 
-
-
 request.interceptors.request.use(function (config) {
-
   // 在发送请求之前做些什么
   const token = localStorage.getItem("token")
+
+  console.log('Request URL:', config.url)
+  console.log('Token exists:', !!token)
+
+  // 如果没有token且不是登录接口，则重定向到登录页
+  if (!token && !config.url?.includes('/login')) {
+    console.log('No token found, redirecting to login page')
+    // 使用 hash 路由格式
+    window.location.href = "/#/login"
+    return Promise.reject(new Error('No token found'))
+  }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -39,11 +47,10 @@ request.interceptors.response.use(function (response) {
   const { status } = error.response
   if (status === 401) {
     localStorage.removeItem("token")
-    window.location.href = "#/login"
+    window.location.href = "/#/login"
   }
 
   return Promise.reject(error);
 });
-
 
 export default request

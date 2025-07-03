@@ -41,17 +41,31 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
+import useUserStore from '../../store/modules/user'
+import { ElMessage } from 'element-plus'
 
 const loginForm = ref({
   username: '',
   password: '',
 })
 const showPwd = ref(false)
+const showError = ref(false)
 
-const login = () => {
-  // 登录逻辑
-  //请求成功->首页展示数据
-  //请求失败->弹出登录失败的信息
+const login = async () => {
+  try {
+    showError.value = false // 清除之前的错误提示
+    const userStore = useUserStore()
+    const result = await userStore.userLogin(loginForm.value)
+    if (result === 'ok') {
+      // 登录成功，跳转到首页
+      ElMessage.success('登录成功')
+      // 这里可以添加路由跳转逻辑
+    }
+  } catch {
+    // 登录失败，显示错误提示
+    showError.value = true
+    ElMessage.error('用户名或密码错误')
+  }
 }
 </script>
 
@@ -110,6 +124,10 @@ const login = () => {
       font-size: 1.1rem;
       color: black;
     }
+  }
+  .error-alert {
+    margin-top: 16px;
+    width: 100%;
   }
 }
 </style>
