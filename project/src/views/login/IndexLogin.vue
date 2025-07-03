@@ -10,15 +10,21 @@
     <div class="login-form-card">
       <h1>Hello</h1>
       <p>欢迎来到硅谷甄选</p>
-      <el-form :model="loginForm" class="login-form">
-        <el-form-item>
+      <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="loginRules"
+        class="login-form"
+      >
+        <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
             :prefix-icon="User"
             placeholder="请输入用户名"
+            @keyup.enter="login"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="password">
           <el-input
             v-model="loginForm.password"
             :prefix-icon="Lock"
@@ -26,11 +32,17 @@
             placeholder="请输入密码"
             :suffix-icon="showPwd ? 'el-icon-view' : 'el-icon-view-off'"
             @click-suffix="showPwd = !showPwd"
+            @keyup.enter="login"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="login-btn" @click="login">
-            登录
+          <el-button
+            type="primary"
+            class="login-btn"
+            @click="login"
+            :loading="loading"
+          >
+            {{ loading ? '登录中...' : '登录' }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -40,31 +52,79 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { User, Lock } from '@element-plus/icons-vue'
 import useUserStore from '../../store/modules/user'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
+
+const router = useRouter()
+const loginFormRef = ref<FormInstance>()
+const loading = ref(false)
 
 const loginForm = ref({
   username: '',
   password: '',
 })
+
 const showPwd = ref(false)
 const showError = ref(false)
 
+// 表单校验规则
+const loginRules: FormRules = {
+  username: [
+    {
+      required: true,
+      message: '请输入用户名',
+      trigger: 'blur',
+    },
+    {
+      min: 3,
+      max: 20,
+      message: '用户名长度在 3 到 20 个字符',
+      trigger: 'blur',
+    },
+  ],
+  password: [
+    {
+      required: true,
+      message: '请输入密码',
+      trigger: 'blur',
+    },
+    {
+      min: 6,
+      max: 20,
+      message: '密码长度在 6 到 20 个字符',
+      trigger: 'blur',
+    },
+  ],
+}
+
 const login = async () => {
+  if (!loginFormRef.value) return
+
   try {
+    // 表单校验
+    await loginFormRef.value.validate()
+
+    loading.value = true
     showError.value = false // 清除之前的错误提示
+
     const userStore = useUserStore()
     const result = await userStore.userLogin(loginForm.value)
+
     if (result === 'ok') {
       // 登录成功，跳转到首页
       ElMessage.success('登录成功')
-      // 这里可以添加路由跳转逻辑
+      // 路由跳转到首页
+      router.push('/')
     }
   } catch {
     // 登录失败，显示错误提示
     showError.value = true
     ElMessage.error('用户名或密码错误')
+  } finally {
+    loading.value = false
   }
 }
 </script>
