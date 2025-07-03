@@ -7,7 +7,7 @@ export const constantRoute = [
     name: 'login',//命名路由
   }, {
     path: '/',
-    component: () => import('@/views/home/IndexHome.vue'),
+    component: () => import('@/layout/IndexLayout.vue'),
     name: 'layout'
   }, {
     path: '/404',
