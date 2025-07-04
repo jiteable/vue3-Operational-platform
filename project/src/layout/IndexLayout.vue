@@ -49,10 +49,8 @@ import IndexMenu from './menu/IndexMenu.vue'
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 
-// 获取菜单数据（过滤掉隐藏的路由）
-const menuList = computed(() => {
-  return constantRoute.filter(route => !route.meta?.hidden)
-})
+// 只展示未隐藏的一级菜单
+const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden))
 </script>
 
 <style scoped lang="scss">
