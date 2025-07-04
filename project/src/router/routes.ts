@@ -10,6 +10,7 @@ export const constantRoute = [
     meta: {
       title: '登录',
       hidden: true,//代表路由标题在菜单是否隐藏
+      icon: 'Promotion'
     }
   }, {
     path: '/',
@@ -17,7 +18,8 @@ export const constantRoute = [
     name: 'layout',
     meta: {
       title: 'layout',
-      hidden: false
+      hidden: false,
+      icon: 'Avatar'
     },
     children: [
       {
@@ -25,9 +27,10 @@ export const constantRoute = [
         component: () => import('@/views/home/IndexHome.vue'),
         meta: {
           title: '首页',
-          hidden: false
+          hidden: false,
+          icon: 'HomeFilled'
         },
-        name: 'home'
+        name: 'home',
       },
     ]
   }, {
@@ -36,7 +39,8 @@ export const constantRoute = [
     name: '404',
     meta: {
       title: '404',
-      hidden: true
+      hidden: true,
+      icon: 'WarningFilled'
     }
   },
   {
