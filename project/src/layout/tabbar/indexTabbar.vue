@@ -8,6 +8,12 @@
         <el-icon v-else @click="handleClick">
           <Expand />
         </el-icon>
+
+        <el-icon style="margin-left: 12px;">
+          <component :is="fa_icon === icon ? '' : fa_icon" />
+        </el-icon>
+        {{ fa_title === title ? '' : fa_title }}
+        
       </el-breadcrumb-item>
       
       <el-breadcrumb-item>
@@ -17,6 +23,8 @@
         {{ title }}
       </el-breadcrumb-item>
     </el-breadcrumb>
+
+
   </div>
 </template>
 
@@ -30,6 +38,8 @@ const isCollapse = ref(false)
 const emit = defineEmits(['toggleCollapse'])
 
 defineProps<{
+  fa_icon: string, 
+  fa_title: string,
   icon: string
   title: string
 }>()
@@ -41,4 +51,5 @@ function handleClick() {
 </script>
 
 <style scoped>
+
 </style>

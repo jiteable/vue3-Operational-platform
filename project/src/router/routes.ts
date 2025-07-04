@@ -19,6 +19,16 @@ export const constantRoute = [
     meta: { title: '首页', icon: 'HomeFilled' },
   },
   {
+    path: '/center',
+    component: () => import('@/layout/IndexLayout.vue'),
+    name: 'center',
+    meta: {
+      title: '个人中心',
+      icon: 'User',
+      hidden: true,
+    },
+  },
+  {
     path: '/screen',
     component: () => import('@/views/screen/IndexScreen.vue'),
     name: 'screen',
@@ -97,7 +107,8 @@ export const constantRoute = [
         },
       },
     ],
-  }, {
+  },
+  {
     path: '/404',
     component: () => import('@/views/404/IndexErr.vue'),
     name: '404',
