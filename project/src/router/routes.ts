@@ -17,14 +17,6 @@ export const constantRoute = [
     component: () => import('@/layout/IndexLayout.vue'),
     name: 'layout',
     meta: { title: '首页', icon: 'HomeFilled' },
-    children: [
-      {
-        path: '/home',
-        component: () => import('@/views/home/IndexHome.vue'),
-        name: 'home',
-        meta: { title: '首页', icon: 'HomeFilled' }
-      }
-    ]
   },
   {
     path: '/screen',

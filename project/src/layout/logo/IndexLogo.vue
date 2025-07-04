@@ -7,6 +7,9 @@
 
 <script setup lang="ts">
 import setting from '../../setting'
+
+
+
 </script>
 
 
@@ -17,14 +20,18 @@ import setting from '../../setting'
   color: white;
   display: flex;
   align-items: center;
+  overflow: hidden;
   padding-left: 20px;
   img {
     width: 40px;
     height: 40px;
   }
   p {
-    margin-left: 10px;
     font-size: $base-logo-title-fontSize;
+    position: absolute;
+    left: 70px;
   }
+
+
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
   <div class="layout-container">
     <!-- 左侧菜单 -->
-    <div class="layout-left">
-      <IndexLogo />
+    <div class="layout-left" :class="{ collapsed: isCollapse }">
+      <IndexLogo :isCollapse="isCollapse" />
       <!--滚动组件-->
       <el-scrollbar class="scrollbar">
         <!--菜单组件-->
         <el-menu 
+          :collapse="isCollapse"
           background-color="#001529" 
           text-color="#fff"
           :default-active="activeMenu"
@@ -20,10 +21,11 @@
     <div class="layout-main">
       <!-- 顶部导航 -->
       <div class="layout-header">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-          <el-breadcrumb-item>角色管理</el-breadcrumb-item>
-        </el-breadcrumb>
+        <IndexTabbar
+          :icon="String(route.meta.icon ?? '')"
+          :title="String(route.meta.title ?? '')"
+          @toggleCollapse="isCollapse = !isCollapse"
+        />
         <div class="header-right">
           <el-button icon="el-icon-refresh" circle />
           <el-button icon="el-icon-full-screen" circle />
@@ -40,17 +42,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { constantRoute } from '../router/routes'
 import IndexLogo from './logo/IndexLogo.vue'
 import IndexMenu from './menu/IndexMenu.vue'
+//引入顶部tabbar组件
+import IndexTabbar from './tabbar/indexTabbar.vue'
 
+const isCollapse = ref(localStorage.getItem('isCollapse') === 'true')
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 
 // 只展示未隐藏的一级菜单
 const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden))
+
+// 侧边栏折叠状态，持久化到localStorage
+watch(isCollapse, (val) => {
+  localStorage.setItem('isCollapse', String(val))
+})
 </script>
 
 <style scoped lang="scss">
@@ -84,6 +94,14 @@ const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden)
       color: #ffd04b !important;
     }
   }
+  transition: all 0.3s;
+  :deep(.el-menu) {
+    border-right: none !important;
+    box-shadow: none !important;
+  }
+}
+.layout-left.collapsed{
+  width: 64px;
 }
 .layout-main {
   flex: 1;
