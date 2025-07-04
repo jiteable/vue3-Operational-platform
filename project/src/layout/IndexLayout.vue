@@ -3,41 +3,19 @@
     <!-- 左侧菜单 -->
     <div class="layout-left">
       <IndexLogo />
-      <el-menu
-        class="side-menu"
-        :default-active="activeMenu"
-        background-color="#001529"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        :collapse="isCollapse"
-        router
-      >
-        <el-menu-item index="/">
-          <el-icon><i class="el-icon-house"></i></el-icon>
-          <span>首页</span>
-        </el-menu-item>
-        <el-menu-item index="/screen">
-          <el-icon><i class="el-icon-monitor"></i></el-icon>
-          <span>数据大屏</span>
-        </el-menu-item>
-        <el-sub-menu index="acl">
-          <template #title>
-            <el-icon><i class="el-icon-lock"></i></el-icon>
-            <span>权限管理</span>
-          </template>
-          <el-menu-item index="/acl/user">用户管理</el-menu-item>
-          <el-menu-item index="/acl/role">角色管理</el-menu-item>
-          <el-menu-item index="/acl/menu">菜单管理</el-menu-item>
-        </el-sub-menu>
-        <el-sub-menu index="product">
-          <template #title>
-            <el-icon><i class="el-icon-goods"></i></el-icon>
-            <span>商品管理</span>
-          </template>
-          <el-menu-item index="/product/category">分类管理</el-menu-item>
-          <el-menu-item index="/product/list">商品列表</el-menu-item>
-        </el-sub-menu>
-      </el-menu>
+      <!--滚动组件-->
+      <el-scrollbar class="scrollbar">
+        <!--菜单组件-->
+        <el-menu 
+          background-color="#001529" 
+          text-color="#fff"
+          :default-active="activeMenu"
+          router
+        >
+          <!--根据路由动态生成菜单-->
+          <IndexMenu :menuList="menuList" />
+        </el-menu>
+      </el-scrollbar>
     </div>
     <div class="layout-main">
       <!-- 顶部导航 -->
@@ -62,15 +40,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { constantRoute } from '../router/routes'
 import IndexLogo from './logo/IndexLogo.vue'
+import IndexMenu from './menu/IndexMenu.vue'
 
 const route = useRoute()
 const activeMenu = computed(() => route.path)
-const isCollapse = ref(false)
 
-
+// 获取菜单数据（过滤掉隐藏的路由）
+const menuList = computed(() => {
+  return constantRoute.filter(route => !route.meta?.hidden)
+})
 </script>
 
 <style scoped lang="scss">

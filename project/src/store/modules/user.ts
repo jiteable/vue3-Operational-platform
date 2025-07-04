@@ -3,7 +3,7 @@ import type { loginForm, loginResponseData } from '@/api/user/type'
 import { defineStore } from 'pinia'
 import type { UserState } from './type/type'
 import { setToken, getToken } from '@/utils/token'
-
+import { constantRoute } from '@/router/routes'
 
 const useUserStore = defineStore('User', {
   state: (): UserState => ({
@@ -12,7 +12,8 @@ const useUserStore = defineStore('User', {
     avatar: '',
     roles: [] as string[],
     buttons: [] as string[],
-    routes: [] as string[]
+    routes: [] as string[],
+    menuRoutes: constantRoute
   }),
 
   actions: {
