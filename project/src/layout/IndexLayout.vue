@@ -49,7 +49,7 @@
                   </el-icon>
                   个人中心
                 </el-dropdown-item>
-                <el-dropdown-item @click="reLogin">退出账号</el-dropdown-item>
+                <el-dropdown-item @click="Logout">退出账号</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -74,7 +74,7 @@ import IndexMenu from './menu/IndexMenu.vue'
 //引入顶部tabbar组件
 import { ArrowDown, User } from '@element-plus/icons-vue'
 import IndexTabbar from './tabbar/indexTabbar.vue'
-import { reLogin } from '../../src/utils/reLogin'
+import { Logout } from '../utils/Logout'
 
 
 const isCollapse = ref(localStorage.getItem('isCollapse') === 'true')
