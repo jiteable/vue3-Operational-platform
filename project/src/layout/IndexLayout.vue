@@ -1,13 +1,13 @@
 <template>
   <div class="layout-container">
     <!-- 左侧菜单 -->
-    <div class="layout-left" :class="{ collapsed: isCollapse }">
-      <IndexLogo :isCollapse="isCollapse" />
+    <div class="layout-left" :class="{ collapsed: settingStore.isCollapse }">
+      <IndexLogo :isCollapse="settingStore.isCollapse" />
       <!--滚动组件-->
       <el-scrollbar class="scrollbar">
         <!--菜单组件-->
         <el-menu 
-          :collapse="isCollapse"
+          :collapse="settingStore.isCollapse"
           background-color="#001529" 
           text-color="#fff"
           :default-active="activeMenu"
@@ -22,11 +22,11 @@
       <!-- 顶部导航 -->
       <div class="layout-header">
         <IndexTabbar
-          :fa_icon="String(route.matched[0].meta.icon ?? '')"
-          :fa_title="String(route.matched[0].meta.title ?? '')"
+          :fa_icon="String(route.matched[0]?.meta?.icon ?? '')"
+          :fa_title="String(route.matched[0]?.meta?.title ?? '')"
           :icon="String(route.meta.icon ?? '')"
           :title="String(route.meta.title ?? '')"
-          @toggleCollapse="isCollapse = !isCollapse"
+          @toggleCollapse="settingStore.changeFold()"
         />
         <div class="header-right">
           <el-button icon="Refresh" @click="handleRefresh" circle />
@@ -66,18 +66,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { constantRoute } from '../router/routes'
 import IndexLogo from './logo/IndexLogo.vue'
 import IndexMenu from './menu/IndexMenu.vue'
 //引入顶部tabbar组件
 import { ArrowDown, User } from '@element-plus/icons-vue'
+import useSettingStore from '../store/modules/setting'
 import { Logout } from '../utils/Logout'
 import IndexTabbar from './tabbar/indexTabbar.vue'
 
-
-const isCollapse = ref(localStorage.getItem('isCollapse') === 'true')
+const settingStore = useSettingStore()
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 
@@ -124,11 +124,6 @@ function handleLogout() {
 
 // 只展示未隐藏的一级菜单
 const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden))
-
-// 侧边栏折叠状态，持久化到localStorage
-watch(isCollapse, (val) => {
-  localStorage.setItem('isCollapse', String(val))
-})
 </script>
 
 <style scoped lang="scss">

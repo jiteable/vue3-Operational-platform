@@ -1,9 +1,9 @@
 import { reqLogin, reqUserInfo } from '@/api/user'
 import type { loginForm, loginResponseData } from '@/api/user/type'
+import { constantRoute } from '@/router/routes'
+import { getToken, setToken } from '@/utils/token'
 import { defineStore } from 'pinia'
 import type { UserState } from './type/type'
-import { setToken, getToken } from '@/utils/token'
-import { constantRoute } from '@/router/routes'
 
 const useUserStore = defineStore('User', {
   state: (): UserState => ({
@@ -23,6 +23,7 @@ const useUserStore = defineStore('User', {
         const result: loginResponseData = await reqLogin(data)
         if (result.code === 200) {
           this.token = (result.data.token as string)
+          // 设置 token 过期时间 默认 24 小时）
           setToken(result.data.token as string)
           return 'ok'
         } else {
