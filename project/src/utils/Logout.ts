@@ -1,12 +1,12 @@
-import { useRouter } from 'vue-router'
+
 import useUserStore from '../store/modules/user'
 
-const userStore = useUserStore()
-const router = useRouter()
 
-export function Logout() {
+export async function Logout() {
+
+  const userStore = useUserStore()
   // 清除本地 token
-  userStore.userLogout()
+  await userStore.userLogout()
   // 跳转到登录页
-  router.push('/login')
+  window.location.href = '/#/login'
 }

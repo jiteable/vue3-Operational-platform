@@ -19,6 +19,9 @@ import '@/styles/index.scss'
 
 import pinia from './store/index.ts'
 
+//引入权限管理文件
+import './permisstion'
+
 
 createApp(App).use(ElementPlus, {
   locale: zhCn

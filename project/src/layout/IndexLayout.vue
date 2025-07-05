@@ -49,7 +49,7 @@
                   </el-icon>
                   个人中心
                 </el-dropdown-item>
-                <el-dropdown-item @click="Logout">退出账号</el-dropdown-item>
+                <el-dropdown-item @click="handleLogout">退出账号</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -73,8 +73,8 @@ import IndexLogo from './logo/IndexLogo.vue'
 import IndexMenu from './menu/IndexMenu.vue'
 //引入顶部tabbar组件
 import { ArrowDown, User } from '@element-plus/icons-vue'
-import IndexTabbar from './tabbar/indexTabbar.vue'
 import { Logout } from '../utils/Logout'
+import IndexTabbar from './tabbar/indexTabbar.vue'
 
 
 const isCollapse = ref(localStorage.getItem('isCollapse') === 'true')
@@ -118,6 +118,9 @@ function goToProfile() {
   router.push('/center') // 替换为你的个人中心路由地址
 }
 
+function handleLogout() {
+  Logout()
+}
 
 // 只展示未隐藏的一级菜单
 const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden))
