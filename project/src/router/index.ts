@@ -1,4 +1,6 @@
 //通过vue-router插件实现模板路由配置
+import 'nprogress/nprogress.css'
+import NProgress from 'nprogress'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { constantRoute } from './routes'
 
@@ -17,6 +19,7 @@ const router = createRouter({
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
+  NProgress.start()
   const token = localStorage.getItem('token')
 
   // 如果访问登录页，直接放行
@@ -35,5 +38,9 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
+// 路由切换后
+router.afterEach(() => {
+  NProgress.done()
+})
 
 export default router
