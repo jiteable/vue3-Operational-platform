@@ -25,3 +25,13 @@ export interface TradeMarkResponseData extends ResponseData {
     pages: number
   }
 }
+
+// 添加/修改品牌的响应类型
+export interface AddOrUpdateTrademarkResponse extends ResponseData {
+  data: null
+}
+
+// 删除品牌的响应类型
+export interface DeleteTrademarkResponse extends ResponseData {
+  data: null
+}
