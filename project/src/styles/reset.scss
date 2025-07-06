@@ -89,10 +89,10 @@ textarea {
   font-size: inherit;
 }
 
-button,
-html [type="button"],
-[type="reset"],
-[type="submit"] {
+button:not(.el-button),
+html [type="button"]:not(.el-button),
+[type="reset"]:not(.el-button),
+[type="submit"]:not(.el-button) {
   padding: 0;
   border: 0;
   color: inherit;
