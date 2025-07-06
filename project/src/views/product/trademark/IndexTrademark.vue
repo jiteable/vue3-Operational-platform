@@ -51,7 +51,9 @@
 <script lang="ts" setup>
 
 //引入组合式API函数ref
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { reqHasTrademark } from '../../../api/product/trademark';
+import type { Records } from '../../../api/product/trademark/type';
 
 //当前页码
 let pageNo = ref<number>(1);
@@ -60,6 +62,16 @@ let limit = ref<number>(3);
 //存储已有品牌数据总数
 let total = ref<number>(0);
 //存储已有品牌的数据
+let trademarkArr = ref<Records>([]);
+
+const getHasTrademark = async (pager = 1) => {
+  pageNo.value = pager
+  let result = await reqHasTrademark(pageNo.value, limit.value);
+  if (result.code == 200) {
+    trademarkArr.value = result.data.records;
+    total.value = result.data.total;
+  }
+}
 
 //控制对话框显示与隐藏
 let dialogFormVisible = ref<boolean>(false)
@@ -68,9 +80,18 @@ let dialogFormVisible = ref<boolean>(false)
 //获取已有品牌的接口封装为一个函数:在任何情况下向获取数据,调用次函数即可
 
 //组件挂载完毕钩子---发一次请求,获取第一页、一页三个已有品牌数据
+onMounted(() => {
+    getHasTrademark()
+})
 
 
+// const changePage = () => {
+//     getHasTrademark()
+// }
 
+const sizeChange = () => {
+    getHasTrademark()
+}
 
 
 </script>
