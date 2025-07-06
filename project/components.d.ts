@@ -25,6 +25,8 @@ declare module 'vue' {
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElScrpllbar: typeof import('element-plus/es')['ElScrpllbar']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    ElTable: typeof import('element-plus/es')['ElTable']
+    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IndexPag: typeof import('./src/components/Pagination/indexPag.vue')['default']
     IndexSvg: typeof import('./src/components/SvgIcon/indexSvg.vue')['default']
