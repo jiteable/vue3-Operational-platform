@@ -2,7 +2,7 @@
   <el-card>
     <el-form>
       <el-form-item label="一级分类">
-        <el-select v-model="category1Id" placeholder="请选择分类">
+        <el-select v-model="categoryStore.c1Id" placeholder="请选择分类" @change="handler">
           <el-option
             v-for="(c1,index) in categoryStore.c1Arr"
             :key="c1.id"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="二级分类">
-        <el-select v-model="category2Id" placeholder="请选择分类">
+        <el-select v-model="categoryStore.c2Id" placeholder="请选择分类" @change="handler2">
           <el-option
             v-for="(c2,index) in categoryStore.c2Arr"
             :key="c2.id"
@@ -22,7 +22,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="三级分类">
-        <el-select v-model="category3Id" placeholder="请选择分类">
+        <el-select v-model="categoryStore.c3Id" placeholder="请选择分类">
           <el-option
             v-for="(c3,index) in categoryStore.c3Arr"
             :key="c3.id"
@@ -36,37 +36,34 @@
 </template>
 
 <script lang="ts" setup>
-import { reqC1, reqC2, reqC3 } from '../../api/product/attr/index'
-import { onMounted, ref } from 'vue'
+import { onMounted} from 'vue'
 import useCategoryStore from '../../store/modules/category'
 
 const categoryStore = useCategoryStore()
-const category1Id = ref<number>(0)
-const category2Id = ref<number>(0)
-const category3Id = ref<number>(0)
-
-const category1Arr = ref([])
-const category2Arr = ref([])
-const category3Arr = ref([])
 
 onMounted(async () => { 
   getCategory1()
 })
 
 const getCategory1 = async () => {
-  const result = await reqC1()
-  console.log(result)
+
 }
 
-const getCategory2 = async () => {
-  const result = await reqC2(category1Id.value)
-  console.log(result)
+// 一级分类下拉菜单的change事件
+const handler = () => {
+  categoryStore.c2Id = ''
+  categoryStore.c3Id = ''
+  categoryStore.c3Arr = []
+
+  categoryStore.getC2()
 }
 
-const getCategory3 = async () => {
-  const result = await reqC3(category2Id.value)
-  console.log(result)
+// 二级分类下拉菜单的change事件
+const handler2 = () => {
+  categoryStore.c3Id = ''
+  categoryStore.getC3()
 }
+
 
 </script>
 

@@ -24,14 +24,14 @@ const useCategoryStore = defineStore('category', {
         this.c1Arr = result.data
       }
     },
-    async getC2(category1Id: number | string) {
-      const result = await reqC2(category1Id)
+    async getC2() {
+      const result = await reqC2(this.c1Id)
       if (result.code === 200) {
         this.c2Arr = result.data
       }
     },
-    async getC3(category2Id: number | string) {
-      const result = await reqC3(category2Id)
+    async getC3() {
+      const result = await reqC3(this.c2Id)
       if (result.code === 200) {
         this.c3Arr = result.data
       }
