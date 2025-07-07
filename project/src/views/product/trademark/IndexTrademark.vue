@@ -55,10 +55,10 @@
                 <el-form-item label="品牌名称" label-width="100px" prop="tmName">
                     <el-input placeholder="请您输入品牌名称" v-model="trademarkParams.tmName"></el-input>
                 </el-form-item>
-                <el-form-item label="品牌LOGO" label-width="100px" prop="logoUrl">
+                <el-form-item label="品牌LOGO"  label-width="100px" prop="logoUrl">
                     <!-- upload组件属性:action图片上传路径书写/api,代理服务器不发送这次post请求  -->
-                    <el-upload class="avatar-uploader" action="/api/admin/product/fileUpload" :show-file-list="false"
-                        :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <el-upload class="avatar-uploader"  :action="uploadUrl" :show-file-list="false"
+                        :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-error="handleAvatarError">
                         <img v-if="trademarkParams.logoUrl" :src="trademarkParams.logoUrl" class="avatar" />
                         <el-icon v-else class="avatar-uploader-icon">
                             <Plus />
@@ -84,6 +84,7 @@ import { ElMessage } from 'element-plus';
 import { nextTick, onMounted, reactive, ref } from 'vue';
 import { reqAddOrUpdateTrademark, reqDeleteTrademark, reqHasTrademark } from '../../../api/product/trademark';
 import type { Records, TradeMark } from '../../../api/product/trademark/type';
+import axios from 'axios';
 
 //当前页码
 const pageNo = ref<number>(1);
@@ -93,6 +94,9 @@ const limit = ref<number>(3);
 const total = ref<number>(0);
 //存储已有品牌的数据
 const trademarkArr = ref<Records>([]);
+
+// 上传URL - 使用代理路径
+const uploadUrl = '/api/admin/product/fileUpload';
 
 const getHasTrademark = async (pager = 1) => {
   pageNo.value = pager
@@ -115,7 +119,9 @@ const trademarkParams = reactive<TradeMark>({
 const formRef = ref();
 
 //组件挂载完毕钩子---发一次请求,获取第一页、一页三个已有品牌数据
-onMounted(() => {
+onMounted(async() => {
+    console.log('VITE_APP_BASE_API:', import.meta.env.VITE_APP_BASE_API);
+    await axios.get('/test')
     getHasTrademark()
 })
 
@@ -208,12 +214,51 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
 }
 
 //图片上传成功钩子
-const handleAvatarSuccess: UploadProps['onSuccess'] = (response: { data: string }) => {
+const handleAvatarSuccess: UploadProps['onSuccess'] = (response: { code: number; data: string; message: string; ok: boolean }) => {
     //response:即为当前这次上传图片post请求服务器返回的数据
     //收集上传图片的地址,添加一个新的品牌的时候带给服务器
-    trademarkParams.logoUrl = response.data;
-    //图片上传成功,清除掉对应图片校验结果
-    formRef.value.clearValidate('logoUrl');
+    if (response.code === 200 && response.data) {
+        trademarkParams.logoUrl = response.data;
+        //图片上传成功,清除掉对应图片校验结果
+        formRef.value.clearValidate('logoUrl');
+        ElMessage({
+            type: 'success',
+            message: '图片上传成功'
+        });
+    } else {
+        ElMessage({
+            type: 'error',
+            message: response.message || '图片上传失败'
+        });
+    }
+}
+
+//图片上传错误钩子
+const handleAvatarError: UploadProps['onError'] = (error: any) => {
+    //处理上传错误
+    console.error('Upload error:', error);
+    let errorMessage = '图片上传失败';
+    
+    if (error.response) {
+        // 服务器返回了错误响应
+        if (error.response.data && typeof error.response.data === 'string') {
+            // 如果是HTML错误页面，提取有用的信息
+            if (error.response.data.includes('404')) {
+                errorMessage = '上传接口不存在，请检查服务器配置';
+            } else if (error.response.data.includes('500')) {
+                errorMessage = '服务器内部错误';
+            }
+        } else if (error.response.data && error.response.data.message) {
+            errorMessage = error.response.data.message;
+        }
+    } else if (error.message) {
+        errorMessage = error.message;
+    }
+    
+    ElMessage({
+        type: 'error',
+        message: errorMessage
+    });
 }
 
 //品牌自定义校验规则方法

@@ -60,6 +60,16 @@ module.exports = {
     {
       files: ['scritps/*.js'],
       env: { node: true }
+    },
+    {
+      files: ['**/*.vue'],
+      parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 'latest'
+      },
+      globals: {
+        'import.meta': 'readonly'
+      }
     }
   ]
 }

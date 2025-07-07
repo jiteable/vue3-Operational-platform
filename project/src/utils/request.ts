@@ -1,8 +1,11 @@
 //进行axios的二次封装: 使用请求与响应拦截器
 import axios, { type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 
+// 调试环境变量
+console.log('VITE_APP_BASE_API:', import.meta.env.VITE_APP_BASE_API);
+
 const request: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API,//基础路径上会携带/api
+  baseURL: import.meta.env.VITE_APP_BASE_API || '/api',//基础路径上会携带/api
   timeout: 5000,//超时时间
 })
 
