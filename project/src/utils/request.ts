@@ -1,6 +1,13 @@
 //进行axios的二次封装: 使用请求与响应拦截器
 import axios, { type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 
+// 基础响应数据类型
+export interface BaseResponseData {
+  code: number
+  message: string
+  ok: boolean
+}
+
 // 调试环境变量
 console.log('VITE_APP_BASE_API:', import.meta.env.VITE_APP_BASE_API);
 

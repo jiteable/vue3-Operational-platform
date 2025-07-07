@@ -2,6 +2,7 @@
 import SvgIcon from '@/components/SvgIcon/indexSvg.vue'
 import Pagination from '@/components/Pagination/indexPag.vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import IndexCategory from '@/components/Category/IndexCategory.vue'
 
 const allGloableComponents = { SvgIcon, Pagination }
 //暴露插件对象
@@ -15,5 +16,6 @@ export default {
     for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
       app.component(key, component)
     }
+    app.component('IndexCategory', IndexCategory)
   }
 }

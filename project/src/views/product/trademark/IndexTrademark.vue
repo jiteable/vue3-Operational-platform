@@ -79,12 +79,12 @@
 
 <script setup lang="ts">
 //引入组合式API函数ref
+import axios from 'axios';
 import type { UploadProps } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import { nextTick, onMounted, reactive, ref } from 'vue';
 import { reqAddOrUpdateTrademark, reqDeleteTrademark, reqHasTrademark } from '../../../api/product/trademark';
 import type { Records, TradeMark } from '../../../api/product/trademark/type';
-import axios from 'axios';
 
 //当前页码
 const pageNo = ref<number>(1);
@@ -234,25 +234,28 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (response: { code: number;
 }
 
 //图片上传错误钩子
-const handleAvatarError: UploadProps['onError'] = (error: any) => {
+const handleAvatarError: UploadProps['onError'] = (error: unknown) => {
     //处理上传错误
     console.error('Upload error:', error);
     let errorMessage = '图片上传失败';
     
-    if (error.response) {
-        // 服务器返回了错误响应
-        if (error.response.data && typeof error.response.data === 'string') {
-            // 如果是HTML错误页面，提取有用的信息
-            if (error.response.data.includes('404')) {
-                errorMessage = '上传接口不存在，请检查服务器配置';
-            } else if (error.response.data.includes('500')) {
-                errorMessage = '服务器内部错误';
+    if (error && typeof error === 'object' && 'response' in error) {
+        const response = (error as { response?: { data?: unknown; status?: number } }).response;
+        if (response) {
+            // 服务器返回了错误响应
+            if (response.data && typeof response.data === 'string') {
+                // 如果是HTML错误页面，提取有用的信息
+                if (response.data.includes('404')) {
+                    errorMessage = '上传接口不存在，请检查服务器配置';
+                } else if (response.data.includes('500')) {
+                    errorMessage = '服务器内部错误';
+                }
+            } else if (response.data && typeof response.data === 'object' && response.data !== null && 'message' in response.data) {
+                errorMessage = (response.data as { message: string }).message;
             }
-        } else if (error.response.data && error.response.data.message) {
-            errorMessage = error.response.data.message;
         }
-    } else if (error.message) {
-        errorMessage = error.message;
+    } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as { message: string }).message;
     }
     
     ElMessage({
