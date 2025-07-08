@@ -1,14 +1,14 @@
 <template>
     <IndexCategory />
     <el-card style="margin: 10px 0px;">
-        <div v-show="scene === 1">
-            <el-button @click="addAttr" type="primary" size="default" icon="Plus" :disabled="categoryStore.c3Id">添加属性</el-button>
+        <div v-show="scene === 0">
+            <el-button @click="addAttr" type="primary" size="default" icon="Plus" :disabled="!categoryStore.c3Id">添加属性</el-button>
             <el-table border style="margin:10px 0px" :data="attrArr">
                <el-table-column label="序号" width="80" align="center" type="index"></el-table-column>
                <el-table-column label="属性名称" width="120" prop="attrName"></el-table-column>
                <el-table-column label="属性值名称" prop="attrValueList">
                     <template v-slot="{ row }">
-                            <el-tag style="margin:5px" v-for="(item, index) in row.attrValueList" :key="item.id">{{
+                            <el-tag style="margin:5px" v-for="item in row.attrValueList" :key="item.id">{{
                                 item.valueName }}</el-tag>
                     </template>
                </el-table-column>
@@ -68,7 +68,7 @@ import useCategoryStore from '../../../store/modules/category'
 import type { BaseResponseData } from '../../../utils/request'
 
 const categoryStore = useCategoryStore()
-const scene = ref(1)
+const scene = ref(0)
 
 let attrArr = ref<Attr[]>([]);
 

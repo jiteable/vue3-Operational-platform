@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use('/', trademarkRouter);
-app.use('/', attrRouter);
+app.use('/admin/product', attrRouter);
 app.use('/admin/product', categoryRouter);
 
 // catch 404 and forward to error handler
