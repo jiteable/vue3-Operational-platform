@@ -59,13 +59,13 @@ export interface SpuHasImg extends ResponseData {
 //已有的销售属性值对象ts类型
 export interface SaleAttrValue {
   id?: number
-  createTime?: null
-  updateTime?: null
+  createTime?: unknown
+  updateTime?: unknown
   spuId?: number
   baseSaleAttrId: number | string
   saleAttrValueName: string
   saleAttrName?: string
-  isChecked?: null
+  isChecked?: unknown
 }
 //存储已有的销售属性值数组类型
 export type SpuSaleAttrValueList = SaleAttrValue[]
@@ -73,8 +73,8 @@ export type SpuSaleAttrValueList = SaleAttrValue[]
 //销售属性对象ts类型
 export interface SaleAttr {
   id?: number
-  createTime?: null
-  updateTime?: null
+  createTime?: unknown
+  updateTime?: unknown
   spuId?: number
   baseSaleAttrId: number | string
   saleAttrName: string
