@@ -129,7 +129,7 @@ import useCategoryStore from '../../../store/modules/category'
 import SkuForm from './skuForm.vue'
 import SpuForm from './spuForm.vue'
 
-const scene = ref<number>(2)
+const scene = ref<number>(0)
 const categoryStore = useCategoryStore()
 
 let pageNo = ref<number>(1)
