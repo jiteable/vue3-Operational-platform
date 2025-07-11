@@ -114,18 +114,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { reqHasSpu } from '../../../api/product/spu'
+import { ElMessage } from 'element-plus'
+import { ref, watch, onBeforeUnmount } from 'vue'
+import { reqHasSpu, reqRemoveSpu, reqSkuList } from '../../../api/product/spu'
 import type {
   HasSpuResponseData,
   Records,
+  SkuData,
+  SkuInfoData,
   SpuData,
 } from '../../../api/product/spu/type'
-import useCategoryStore from '../../../store/modules/category'
-import SpuForm from './spuForm.vue'
 import Category from '../../../components/Category/IndexCategory.vue'
+import useCategoryStore from '../../../store/modules/category'
+import SkuForm from './skuForm.vue'
+import SpuForm from './spuForm.vue'
 
-const scene = ref<number>(0)
+const scene = ref<number>(2)
 const categoryStore = useCategoryStore()
 
 let pageNo = ref<number>(1)
@@ -133,9 +137,10 @@ let pageSize = ref<number>(3)
 let total = ref<number>(0)
 //存储已有的SPU的数据
 let records = ref<Records>([])
-let skuArr = ref<SpuData[]>([])
+let skuArr = ref<SkuData[]>([])
 let show = ref<boolean>(false)
 const spu = ref()
+const sku = ref() //获取子组件实例SkuForm
 
 watch(
   () => categoryStore.c3Id,
@@ -147,7 +152,8 @@ watch(
 )
 
 //获取三级分类下的已有的SPU数据
-const getHasSpu = async () => {
+const getHasSpu = async (pager = 1) => {
+  pageNo.value = pager
   const res: HasSpuResponseData = await reqHasSpu(
     pageNo.value,
     pageSize.value,
@@ -164,18 +170,32 @@ const addSpu = async () => {
   spu.value.initAddSpu(categoryStore.c3Id)
 }
 
-const addSku = async (_row: SpuData) => {
+const addSku = (row: SpuData) => {
+  //点击添加SKU按钮切换场景为2
   scene.value = 2
   // TODO: 实现添加SKU的逻辑
+  sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, row)
 }
 
-const findSku = async (_row: SpuData) => {
+const findSku = async (row: SpuData) => {
   // TODO: 实现查看SKU列表的逻辑
-  show.value = true
+
+  const res: SkuInfoData = await reqSkuList(row.id)
+  if (res.code == 200) {
+    skuArr.value = res.data
+    show.value = true
+  }
 }
 
-const deleteSpu = async (_row: SpuData) => {
+const deleteSpu = async (row: SpuData) => {
   // TODO: 实现删除SPU的逻辑
+  const res = await reqRemoveSpu(row.id)
+  if (res.code == 200) {
+    ElMessage.success('删除成功')
+    getHasSpu(records.value.length > 1 ? pageNo.value : pageNo.value - 1)
+  } else {
+    ElMessage.error(res.message)
+  }
 }
 
 const updateSpu = async (row: SpuData) => {
@@ -190,6 +210,10 @@ const changeScene = (val: { flag: number; params: string }) => {
 const changeSize = () => {
   getHasSpu()
 }
+
+onBeforeUnmount(() => {
+  categoryStore.$reset()
+})
 </script>
 
 <style scoped lang="scss"></style>
