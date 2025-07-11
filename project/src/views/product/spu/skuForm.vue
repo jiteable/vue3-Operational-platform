@@ -113,13 +113,15 @@ import type { ElTable } from 'element-plus'
 import { reqAttr } from '../../../api/product/attr/index'
 import type { Attr, AttrResponseData } from '../../../api/product/attr/type'
 import {
+  reqAddSku,
   reqSpuHasSaleAttr,
   reqSpuImageList,
-  reqAddSku,
 } from '../../../api/product/spu'
 import type {
+  SaleAttr,
   SaleAttrResponseData,
   SpuHasImg,
+  SpuImg,
 } from '../../../api/product/spu/type'
 
 // 定义 emit
@@ -131,10 +133,10 @@ const skuFormRef = ref<FormInstance>()
 // 存储平台属性数据
 const attrList = ref<Attr[]>([])
 
-const saleArr = ref([])
+const saleArr = ref<SaleAttr[]>([])
 
 //照片的数据
-let imgArr = ref([])
+let imgArr = ref<SpuImg[]>([])
 
 const table = ref<InstanceType<typeof ElTable>>()
 
@@ -182,19 +184,29 @@ const rules = {
 
 // 保存方法
 const handleSave = async () => {
-  skuParams.skuAttrValueList = attrList.value.reduce((prev: any, next: any) => {
-    if (next.attrIdAndValueId) {
-      let [attrId, valueId] = next.attrIdAndValueId.split(':')
-      prev.push({
-        attrId,
-        valueId,
-      })
+  skuParams.skuAttrValueList = attrList.value.reduce(
+    (
+      prev: { attrId: string; valueId: string }[],
+      next: Attr & { attrIdAndValueId?: string },
+    ) => {
+      if (next.attrIdAndValueId) {
+        let [attrId, valueId] = next.attrIdAndValueId.split(':')
+        prev.push({
+          attrId,
+          valueId,
+        })
+        return prev
+      }
       return prev
-    }
-  }, [])
+    },
+    [],
+  )
 
   skuParams.skuSaleAttrValueList = saleArr.value.reduce(
-    (prev: any, next: any) => {
+    (
+      prev: { saleAttrId: string; saleAttrValueId: string }[],
+      next: SaleAttr & { saleIdAndValueId?: string },
+    ) => {
       if (next.saleIdAndValueId) {
         let [saleAttrId, saleAttrValueId] = next.saleIdAndValueId.split(':')
         prev.push({
@@ -264,15 +276,15 @@ const initSkuData = async (c1Id: string, c2Id: string, row: SpuData) => {
   }
 }
 
-const handleDefault = (row: any) => {
+const handleDefault = (row: SpuImg) => {
   //复选框选中
-  imgArr.value.forEach((item: any) => {
+  imgArr.value.forEach((item: SpuImg) => {
     table.value?.toggleRowSelection(item, false)
   })
 
   table.value?.toggleRowSelection(row, true)
   //收集图片地址
-  skuParams.skuDefaultImg = row.imgUrl
+  skuParams.skuDefaultImg = row.imgUrl || ''
 }
 
 //对外暴露方法

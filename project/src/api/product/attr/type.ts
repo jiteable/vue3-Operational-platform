@@ -36,6 +36,7 @@ export interface Attr {
   categoryId: number | string
   categoryLevel: number
   attrValueList: AttrValueList
+  attrIdAndValueId?: string // 用于SKU表单中组合属性ID和值ID
 }
 //存储每一个属性对象的数组ts类型
 export type AttrList = Attr[]

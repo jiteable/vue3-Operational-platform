@@ -66,6 +66,7 @@ export interface SaleAttrValue {
   saleAttrValueName: string
   saleAttrName?: string
   isChecked?: unknown
+  valueName?: string // 用于模板中的显示，与saleAttrValueName保持一致
 }
 //存储已有的销售属性值数组类型
 export type SpuSaleAttrValueList = SaleAttrValue[]
@@ -81,6 +82,7 @@ export interface SaleAttr {
   spuSaleAttrValueList: SpuSaleAttrValueList
   flag?: boolean
   saleAttrValue?: string
+  saleIdAndValueId?: string // 用于SKU表单中组合销售属性ID和值ID
 }
 //SPU已有的销售属性接口返回数据ts类型
 export interface SaleAttrResponseData extends ResponseData {
