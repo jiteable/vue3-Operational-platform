@@ -1,29 +1,24 @@
-const Sku = require('../../models/product/sku');
+const SkuModel = require('../../models/product/sku');
 
-// 添加 SKU
-exports.addSku = async (skuData) => {
-  return Sku.create(skuData);
+const SkuService = {
+  getList: async ({ page = 1, limit = 10 }) => {
+    const skip = (page - 1) * limit;
+    const total = await SkuModel.countDocuments();
+    const records = await SkuModel.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+    return { records, total, size: limit, current: page, pages: Math.ceil(total / limit) };
+  },
+  onSale: async (skuId) => {
+    return SkuModel.findByIdAndUpdate(skuId, { isSale: 1 });
+  },
+  cancelSale: async (skuId) => {
+    return SkuModel.findByIdAndUpdate(skuId, { isSale: 0 });
+  },
+  getInfo: async (skuId) => {
+    return SkuModel.findById(skuId);
+  },
+  delete: async (skuId) => {
+    return SkuModel.findByIdAndDelete(skuId);
+  }
 };
 
-// 获取指定 SPU 下的 SKU 列表
-exports.getSkuList = async (spuId) => {
-  return Sku.find({ spuId })
-    .populate('tmId', 'tmName')
-    .populate('category3Id', 'name')
-    .sort({ createdAt: -1 });
-};
-
-// 更新 SKU
-exports.updateSku = async (skuId, skuData) => {
-  return Sku.findByIdAndUpdate(skuId, skuData, { new: true });
-};
-
-// 删除 SKU
-exports.deleteSku = async (skuId) => {
-  return Sku.findByIdAndDelete(skuId);
-};
-
-// 批量删除 SKU
-exports.deleteSkusBySpuId = async (spuId) => {
-  return Sku.deleteMany({ spuId });
-}; 
+module.exports = SkuService; 
