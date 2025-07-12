@@ -12,7 +12,7 @@ export interface User {
   username?: string
   password?: string
   name?: string
-  phone?: null
+  phone?: null | string
   roleName?: string
 }
 //数组包含全部的用户信息
