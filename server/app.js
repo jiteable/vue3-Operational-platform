@@ -13,7 +13,8 @@ var trademarkRouter = require('./routes/product/trademark');
 var attrRouter = require('./routes/product/attr');
 var categoryRouter = require('./routes/product/category');
 var spuRouter = require('./routes/product/spu');
-
+var userRouter = require('./routes/acl/user');
+var roleRouter = require('./routes/acl/role');
 
 var app = express();
 
@@ -39,6 +40,7 @@ app.use('/', trademarkRouter);
 app.use('/admin/product', attrRouter);
 app.use('/admin/product', categoryRouter);
 app.use('/admin/product', spuRouter);
+app.use('/admin/acl', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

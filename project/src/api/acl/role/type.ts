@@ -9,7 +9,7 @@ export interface RoleData {
   createTime?: string
   updateTime?: string
   roleName: string
-  remark?: null
+  remark?: string | null
 }
 
 //全部职位的数组的ts类型

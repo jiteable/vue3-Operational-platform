@@ -1,4 +1,4 @@
-<template :key="settingStore.refresh">
+<template>
   <el-card style="height: 80px">
     <el-form :inline="true" class="form">
       <el-form-item label="用户名:">
@@ -62,13 +62,21 @@
         align="center"
         prop="createTime"
         show-overflow-tooltip
-      ></el-table-column>
+      >
+        <template v-slot="{ row }">
+          {{ formatTime(row.createTime) }}
+        </template>
+      </el-table-column>
       <el-table-column
         label="更新时间"
         align="center"
         prop="updateTime"
         show-overflow-tooltip
-      ></el-table-column>
+      >
+        <template v-slot="{ row }">
+          {{ formatTime(row.updateTime) }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="300px" align="center">
         <template v-slot="{ row }">
           <el-button
@@ -175,7 +183,7 @@
             <el-checkbox
               v-for="(role, index) in allRole"
               :key="index"
-              :label="role"
+              :label="role.id"
             >
               {{ role.roleName }}
             </el-checkbox>
@@ -210,7 +218,7 @@ import type {
   User,
   UserResponseData,
 } from '../../../api/acl/user/type'
-import useLayOutSettingStore from '../../../store/modules/setting'
+import { formatTime } from '../../../utils/time'
 //默认页码
 let pageNo = ref<number>(1)
 //一页展示几条数据
@@ -226,7 +234,7 @@ let drawer1 = ref<boolean>(false)
 //存储全部职位的数据
 let allRole = ref<AllRole>([])
 //当前用户已有的职位
-let userRole = ref<number[]>([])
+let userRole = ref<string[]>([])
 //收集用户信息的响应式数据
 let userParams = reactive<User>({
   username: '',
@@ -239,8 +247,6 @@ let selectIdArr = ref<User[]>([])
 let formRef = ref()
 //定义响应式数据:收集用户输入进来的关键字
 let keyword = ref<string>('')
-//获取模板setting仓库
-let settingStore = useLayOutSettingStore()
 //组件挂载完毕
 onMounted(() => {
   getHasUser()
@@ -269,7 +275,7 @@ const addUser = () => {
   drawer.value = true
   //清空数据
   Object.assign(userParams, {
-    id: 0,
+    id: undefined,
     username: '',
     name: '',
     password: '',
@@ -310,9 +316,7 @@ const save = async () => {
       message: userParams.id ? '更新成功' : '添加成功',
     })
     //获取最新的全部账号的信息
-    // getHasUser(userParams.id ? pageNo.value : 1);
-    //浏览器自动刷新一次
-    window.location.reload()
+    getHasUser(userParams.id ? pageNo.value : 1)
   } else {
     //关闭抽屉
     drawer.value = false
@@ -377,17 +381,38 @@ const rules = {
 }
 //分配角色按钮的回调
 const setRole = async (row: User) => {
-  //存储已有的用户信息
-  Object.assign(userParams, row)
-  //获取全部的职位的数据与当前用户已有的职位的数据
-  let result: AllRoleResponseData = await reqAllRole(userParams.id as number)
-  if (result.code == 200) {
-    //存储全部的职位
-    allRole.value = result.data.allRolesList
-    //存储当前用户已有的职位ID数组
-    userRole.value = result.data.assignRoles.map((role) => role.id as number)
-    //抽屉显示出来
-    drawer1.value = true
+  try {
+    console.log('点击分配角色按钮，用户数据:', row)
+    //存储已有的用户信息
+    Object.assign(userParams, row)
+    console.log('存储后的用户参数:', userParams)
+    //获取全部的职位的数据与当前用户已有的职位的数据
+    if (!userParams.id) {
+      ElMessage({ type: 'error', message: '用户ID不能为空' })
+      return
+    }
+    console.log('正在获取用户角色信息，用户ID:', userParams.id)
+    let result: AllRoleResponseData = await reqAllRole(
+      userParams.id?.toString() || '',
+    )
+    console.log('获取角色信息结果:', result)
+    if (result.code == 200) {
+      console.log('API返回的完整数据:', result.data)
+      //存储全部的职位
+      allRole.value = result.data.allRolesList || []
+      //存储当前用户已有的职位ID数组
+      userRole.value = (result.data.assignRoles || []).map(
+        (role) => role.id as string,
+      )
+      //抽屉显示出来
+      drawer1.value = true
+      console.log('分配角色抽屉已打开，角色列表:', allRole.value)
+    } else {
+      ElMessage({ type: 'error', message: '获取角色信息失败' })
+    }
+  } catch (error) {
+    console.error('分配角色失败:', error)
+    ElMessage({ type: 'error', message: '分配角色失败' })
   }
 }
 
@@ -398,7 +423,7 @@ const isIndeterminate = ref<boolean>(true)
 //顶部的全部复选框的change事件
 const handleCheckAllChange = (val: boolean) => {
   //val:true(全选)|false(没有全选)
-  userRole.value = val ? allRole.value.map((role) => role.id as number) : []
+  userRole.value = val ? allRole.value.map((role) => role.id as string) : []
   //不确定的样式(确定样式)
   isIndeterminate.value = false
 }
@@ -413,8 +438,12 @@ const handleCheckedCitiesChange = (value: number[]) => {
 //确定按钮的回调(分配职位)
 const confirmClick = async () => {
   //收集参数
+  if (!userParams.id) {
+    ElMessage({ type: 'error', message: '用户ID不能为空' })
+    return
+  }
   let data: SetRoleData = {
-    userId: userParams.id as number,
+    userId: userParams.id as string,
     roleIdList: userRole.value,
   }
   //分配用户的职位
@@ -431,6 +460,10 @@ const confirmClick = async () => {
 
 //删除某一个用户
 const deleteUser = async (userId: number) => {
+  if (!userId) {
+    ElMessage({ type: 'error', message: '用户ID不能为空' })
+    return
+  }
   let result = await reqRemoveUser(userId)
   if (result.code == 200) {
     ElMessage({ type: 'success', message: '删除成功' })
@@ -464,7 +497,12 @@ const search = () => {
 }
 //重置按钮
 const reset = () => {
-  settingStore.refresh = !settingStore.refresh
+  // 清空搜索关键字
+  keyword.value = ''
+  // 重置页码
+  pageNo.value = 1
+  // 重新获取数据
+  getHasUser()
 }
 </script>
 
