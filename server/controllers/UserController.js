@@ -11,8 +11,9 @@ const UserController = {
 
     if (result.length === 0) {
       res.send({
-        code: "-1",
-        error: "用户名密码不匹配"
+        code: 201,
+        message: "用户名密码不匹配",
+        ok: false
       })
     } else {
       //生成token
@@ -24,8 +25,11 @@ const UserController = {
       res.header("Authorization", token)
 
       res.send({
-        ActionType: "OK",
+        code: 200,
+        message: "登录成功",
+        ok: true,
         data: {
+          token: token,
           _id: result[0]._id,
           username: result[0].username,
           gender: result[0].gender ? result[0].gender : 0, // 性别

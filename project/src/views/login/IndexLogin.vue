@@ -51,12 +51,12 @@
 </template>
 
 <script setup lang="ts">
+import { Lock, User } from '@element-plus/icons-vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { User, Lock } from '@element-plus/icons-vue'
 import useUserStore from '../../store/modules/user'
-import { ElMessage } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
 
 const router = useRouter()
 const loginFormRef = ref<FormInstance>()
@@ -110,17 +110,23 @@ const login = async () => {
     loading.value = true
     showError.value = false // 清除之前的错误提示
 
+    console.log('开始登录，用户名:', loginForm.value.username)
+
     const userStore = useUserStore()
     const result = await userStore.userLogin(loginForm.value)
+
+    console.log('登录结果:', result)
 
     if (result === 'ok') {
       // 登录成功，跳转到首页
       ElMessage.success('登录成功')
+      console.log('准备跳转到首页')
       // 路由跳转到首页
       router.push('/')
     }
-  } catch {
+  } catch (error) {
     // 登录失败，显示错误提示
+    console.error('登录失败:', error)
     showError.value = true
     ElMessage.error('用户名或密码错误')
   } finally {

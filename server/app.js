@@ -41,6 +41,7 @@ app.use('/admin/product', attrRouter);
 app.use('/admin/product', categoryRouter);
 app.use('/admin/product', spuRouter);
 app.use('/admin/acl', userRouter);
+app.use('/admin/acl/role', roleRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

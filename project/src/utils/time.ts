@@ -74,6 +74,20 @@ export const formatTimestamp = (timestamp: number, format: string = 'YYYY-MM-DD 
 };
 
 
+export const getTime = (): string => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour <= 11) {
+    return '早上';
+  } else if (hour >= 12 && hour <= 14) {
+    return '中午';
+  } else if (hour >= 15 && hour <= 19) {
+    return '下午';
+  } else {
+    return '晚上';
+  }
+};
+
+
 /**
  * 使用示例：
  * 

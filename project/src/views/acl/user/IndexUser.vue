@@ -383,19 +383,21 @@ const rules = {
 const setRole = async (row: User) => {
   try {
     console.log('点击分配角色按钮，用户数据:', row)
-    //存储已有的用户信息
-    Object.assign(userParams, row)
-    console.log('存储后的用户参数:', userParams)
-    //获取全部的职位的数据与当前用户已有的职位的数据
-    if (!userParams.id) {
+
+    // 检查用户ID是否存在
+    if (!row.id) {
       ElMessage({ type: 'error', message: '用户ID不能为空' })
       return
     }
-    console.log('正在获取用户角色信息，用户ID:', userParams.id)
-    let result: AllRoleResponseData = await reqAllRole(
-      userParams.id?.toString() || '',
-    )
+
+    //存储已有的用户信息
+    Object.assign(userParams, row)
+    console.log('存储后的用户参数:', userParams)
+
+    console.log('正在获取用户角色信息，用户ID:', row.id)
+    let result: AllRoleResponseData = await reqAllRole(String(row.id))
     console.log('获取角色信息结果:', result)
+
     if (result.code == 200) {
       console.log('API返回的完整数据:', result.data)
       //存储全部的职位

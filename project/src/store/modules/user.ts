@@ -21,6 +21,7 @@ const useUserStore = defineStore('User', {
     async userLogin(data: loginForm) {
       try {
         const result: loginResponseData = await reqLogin(data)
+
         if (result.code === 200) {
           this.token = (result.data.token as string)
           // 设置 token 过期时间 默认 24 小时）
@@ -30,6 +31,7 @@ const useUserStore = defineStore('User', {
           return Promise.reject(new Error('登录失败'))
         }
       } catch (error) {
+        console.error('登录请求异常:', error)
         return Promise.reject(error)
       }
     },

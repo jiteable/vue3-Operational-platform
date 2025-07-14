@@ -6,13 +6,19 @@
       <!--滚动组件-->
       <el-scrollbar class="scrollbar">
         <!--菜单组件-->
-        <el-menu 
+        <el-menu
           :collapse="settingStore.isCollapse"
-          background-color="#001529" 
+          background-color="#001529"
           text-color="#fff"
           :default-active="activeMenu"
           router
         >
+          <el-menu-item index="/home">
+            <el-icon>
+              <HomeFilled />
+            </el-icon>
+            <span>首页</span>
+          </el-menu-item>
           <!--根据路由动态生成菜单-->
           <IndexMenu :menuList="menuList" />
         </el-menu>
@@ -32,7 +38,13 @@
           <el-button icon="Refresh" @click="handleRefresh" circle />
           <el-button icon="FullScreen" @click="handleFullScreen" circle />
           <el-button icon="Setting" @click="handleSetting" circle />
-          <el-avatar size="small" style="margin-left: 16px" :src="avatarUrl">A</el-avatar>
+          <el-avatar
+            size="small"
+            style="margin-left: 16px"
+            :src="userStore.avatar"
+          >
+            A
+          </el-avatar>
 
           <el-dropdown>
             <span class="username">
@@ -49,12 +61,12 @@
                   </el-icon>
                   个人中心
                 </el-dropdown-item>
-                <el-dropdown-item @click="handleLogout">退出账号</el-dropdown-item>
+                <el-dropdown-item @click="handleLogout">
+                  退出账号
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-
-
         </div>
       </div>
       <!-- 右侧内容 -->
@@ -63,6 +75,24 @@
       </div>
     </div>
   </div>
+
+  <el-drawer v-model="visible" :show-close="false">
+    <template #header="{ titleId, titleClass }">
+      <h4 :id="titleId" :class="titleClass">设置</h4>
+    </template>
+    <div>主题颜色</div>
+    <div class="switch-container">
+      <div>暗色主题切换</div>
+      <div class="switch-item">
+        <el-switch
+          v-model="value1"
+          :active-action-icon="Moon"
+          :inactive-action-icon="Sunny"
+          @change="changeDark"
+        />
+      </div>
+    </div>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
@@ -76,12 +106,19 @@ import { ArrowDown, User } from '@element-plus/icons-vue'
 import useSettingStore from '../store/modules/setting'
 import { Logout } from '../utils/Logout'
 import IndexTabbar from './tabbar/indexTabbar.vue'
+import useUserStore from '../store/modules/user'
+import { Moon, Sunny } from '@element-plus/icons-vue'
+
+let userStore = useUserStore()
 
 const settingStore = useSettingStore()
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 
-const avatarUrl = ref('你的头像地址') // 可替换为实际头像
+const visible = ref(false)
+
+const value1 = ref(false)
+
 const username = ref('admin') // 可替换为实际用户名
 
 const secondLevelPath = computed(() => {
@@ -111,7 +148,7 @@ function handleFullScreen() {
 function handleSetting() {
   // 打开设置弹窗或侧边栏
   // 这里可以用 ElDrawer/ElDialog 或自定义逻辑
-  alert('打开设置面板')
+  visible.value = true
 }
 
 function goToProfile() {
@@ -123,7 +160,20 @@ function handleLogout() {
 }
 
 // 只展示未隐藏的一级菜单
-const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden))
+const menuList = computed(() =>
+  constantRoute.filter((item) => !item.meta?.hidden),
+)
+
+const changeDark = () => {
+  //获取HTML根节点
+  let html = document.documentElement
+  //判断HTML标签是否有类名dark
+  if (value1.value) {
+    html.classList.add('dark')
+  } else {
+    html.classList.remove('dark')
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -163,7 +213,7 @@ const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden)
     box-shadow: none !important;
   }
 }
-.layout-left.collapsed{
+.layout-left.collapsed {
   width: 64px;
 }
 .layout-main {
@@ -213,5 +263,14 @@ const menuList = computed(() => constantRoute.filter(item => !item.meta?.hidden)
   background: #f5f6fa;
   overflow: auto;
   padding: 20px;
+}
+.switch-container {
+  margin-top: 20px;
+  width: 100%;
+  height: 20px;
+  .switch-item {
+    float: right;
+    margin-top: -24px;
+  }
 }
 </style>

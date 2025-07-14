@@ -22,6 +22,9 @@ import './permisstion'
 // 最后导入Element Plus样式，确保不被其他样式覆盖
 import 'element-plus/dist/index.css'
 
+//引入暗色主题样式
+import 'element-plus/theme-chalk/dark/css-vars.css'
+
 createApp(App).use(ElementPlus, {
   locale: zhCn
 }).use(globalComponents).use(pinia).use(router).mount('#app')

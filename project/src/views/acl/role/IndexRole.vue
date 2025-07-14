@@ -38,13 +38,21 @@
         align="center"
         show-overflow-tooltip
         prop="createTime"
-      ></el-table-column>
+      >
+        <template v-slot="{ row }">
+          {{ formatTime(row.createTime) }}
+        </template>
+      </el-table-column>
       <el-table-column
         label="更新时间"
         align="center"
         show-overflow-tooltip
         prop="updateTime"
-      ></el-table-column>
+      >
+        <template v-slot="{ row }">
+          {{ formatTime(row.updateTime) }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="280px" align="center">
         <!-- row:已有的职位对象 -->
         <template v-slot="{ row }">
@@ -154,8 +162,8 @@ import type {
 } from '../../../api/acl/role/type'
 //引入骨架的仓库
 import { ElMessage } from 'element-plus'
-import useLayOutSettingStore from '../../../store/modules/setting'
-let settingStore = useLayOutSettingStore()
+import { formatTime } from '../../../utils/time'
+
 //当前页码
 let pageNo = ref<number>(1)
 //一页展示几条数据
@@ -213,7 +221,12 @@ const search = () => {
 }
 //重置按钮的回调
 const reset = () => {
-  settingStore.refresh = !settingStore.refresh
+  // 清空搜索关键字
+  keyword.value = ''
+  // 重置页码
+  pageNo.value = 1
+  // 重新获取数据
+  getHasRole()
 }
 //添加职位按钮的回调
 const addRole = () => {

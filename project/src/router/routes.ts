@@ -3,24 +3,28 @@
 //对外暴露配置路由
 export const constantRoute = [
   {
-    //登录
     path: '/login',
     component: () => import('@/views/login/IndexLogin.vue'),
-    name: 'login',//命名路由
-    meta: {
-      title: '登录',
-      hidden: true,//代表路由标题在菜单是否隐藏
-      icon: 'Promotion'
-    }
-  }, {
+    name: 'login',
+    meta: { title: '登录', hidden: true, icon: 'Promotion' }
+  },
+  {
     path: '/',
     component: () => import('@/layout/IndexLayout.vue'),
     name: 'layout',
-    meta: { title: '首页', icon: 'HomeFilled' },
+    redirect: '/home',
+    children: [
+      {
+        path: 'home', // 注意不要加斜杠
+        component: () => import('@/views/home/IndexHome.vue'),
+        name: 'home',
+        meta: { title: '首页', icon: 'HomeFilled' }
+      }
+    ]
   },
   {
     path: '/center',
-    component: () => import('@/layout/IndexLayout.vue'),
+    component: () => import('@/views/login/IndexLogin.vue'),
     name: 'center',
     meta: {
       title: '个人中心',
@@ -41,19 +45,19 @@ export const constantRoute = [
     meta: { title: '权限管理', icon: 'Lock' },
     children: [
       {
-        path: '/acl/user',
+        path: 'user',
         component: () => import('@/views/acl/user/IndexUser.vue'),
         name: 'user',
         meta: { title: '用户管理', icon: 'User' }
       },
       {
-        path: '/acl/role',
+        path: 'role',
         component: () => import('@/views/acl/role/IndexRole.vue'),
         name: 'role',
         meta: { title: '角色管理', icon: 'UserFilled' }
       },
       {
-        path: '/acl/menu',
+        path: 'menu',
         component: () => import('@/views/acl/menu/IndexMenu.vue'),
         name: 'menu',
         meta: { title: '菜单管理', icon: 'Grid' }
@@ -71,7 +75,7 @@ export const constantRoute = [
     redirect: '/product/trademark',
     children: [
       {
-        path: '/product/trademark',
+        path: 'trademark',
         component: () => import('@/views/product/trademark/IndexTrademark.vue'),
         name: 'Trademark',
         meta: {
@@ -80,7 +84,7 @@ export const constantRoute = [
         },
       },
       {
-        path: '/product/attr',
+        path: 'attr',
         component: () => import('@/views/product/attr/IndexAttr.vue'),
         name: 'Attr',
         meta: {
@@ -89,7 +93,7 @@ export const constantRoute = [
         },
       },
       {
-        path: '/product/spu',
+        path: 'spu',
         component: () => import('@/views/product/spu/IndexSpu.vue'),
         name: 'Spu',
         meta: {
@@ -98,7 +102,7 @@ export const constantRoute = [
         },
       },
       {
-        path: '/product/sku',
+        path: 'sku',
         component: () => import('@/views/product/sku/IndexSku.vue'),
         name: 'Sku',
         meta: {

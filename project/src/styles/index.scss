@@ -15,3 +15,42 @@
 }
 
 
+html.dark {
+  // 全局背景色
+  body, .layout-container, .layout-main, .layout-header, .layout-right {
+    background: #18181c !important;
+    color: #e5eaf3 !important;
+  }
+
+  // 菜单栏
+  .layout-left {
+    background: #141414 !important;
+    .el-menu {
+      background: #141414 !important;
+      color: #e5eaf3 !important;
+    }
+    .el-menu-item.is-active {
+      background: #232324 !important;
+      color: #ffd04b !important;
+    }
+  }
+
+  // 顶部导航
+  .layout-header {
+    background: #232324 !important;
+    color: #e5eaf3 !important;
+    box-shadow: 0 2px 8px #232324;
+
+    .username{
+      color: #e5eaf3 !important;
+    }
+  }
+
+  // 其它自定义
+  .el-dropdown-menu {
+    background: #232324 !important;
+    color: #e5eaf3 !important;
+  }
+  // ...可继续补充
+}
+
