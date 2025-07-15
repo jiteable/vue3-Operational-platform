@@ -50,5 +50,5 @@ export type MenuList = MenuData[]
 
 //菜单权限与按钮权限数据的ts类型
 export interface MenuResponseData extends ResponseData {
-  data: MenuList
+  data: string[]
 }

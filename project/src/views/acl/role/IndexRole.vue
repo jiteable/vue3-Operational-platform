@@ -125,15 +125,14 @@
     <template #default>
       <!-- 树形控件 -->
       <el-tree
-        :ref="tree"
-        :data="data"
+        ref="tree"
+        :data="PermisstionArr"
         show-checkbox
         node-key="id"
         default-expand-all
         :default-checked-keys="selectArr"
         :props="defaultProps"
         highlight-current
-        v-model:checked-keys="selectArr"
       />
     </template>
     <template #footer>
@@ -156,8 +155,6 @@ import {
   reqSetMenu,
 } from '../../../api/acl/role'
 import type {
-  MenuList,
-  MenuResponseData,
   Records,
   RoleData,
   RoleResponseData,
@@ -165,6 +162,7 @@ import type {
 //引入骨架的仓库
 import { ElMessage } from 'element-plus'
 import { formatTime } from '../../../utils/time'
+import { reqAllPermisstion } from '../../../api/acl/permission'
 
 //当前页码
 let pageNo = ref<number>(1)
@@ -186,10 +184,12 @@ let drawer = ref<boolean>(false)
 let RoleParams = reactive<RoleData>({
   roleName: '',
 })
-//准备一个数组:数组用于存储勾选的节点的ID(四级的)
-// let selectArr = ref<number[]>([])
+
+let PermisstionArr = ref([])
+
+let selectArr = ref([])
 //定义数组存储用户权限的数据
-let menuArr = ref<MenuList>([])
+
 //获取tree组件实例
 let tree = ref()
 //组件挂载完毕
@@ -289,15 +289,22 @@ const save = async () => {
 //分配权限按钮的回调
 //已有的职位的数据
 const setPermisstion = async (row: RoleData) => {
+  console.log(row, 'row')
+  getHasPermisstion()
+
+  //清除上一次的selectArr
+  selectArr.value = []
+
   //抽屉显示出来
   drawer.value = true
   //收集当前要分类权限的职位的数据
   Object.assign(RoleParams, row)
-  //根据职位获取权限的数据
-  let result: MenuResponseData = await reqAllMenuList(RoleParams._id as number)
+  //根据职位获取权限的数据(获取权限的id)
+  let result = await reqAllMenuList(RoleParams._id as number)
+  console.log(result, 'result')
   if (result.code == 200) {
-    menuArr.value = result.data
-    selectArr.value = filterSelectArr(menuArr.value, [])
+    selectArr.value = result.data
+    console.log(selectArr.value, 'selectArr.value')
   } else {
     console.log(result)
   }
@@ -308,28 +315,37 @@ const setPermisstion = async (row: RoleData) => {
 //   label: 'name',
 // }
 
-const filterSelectArr = (allData, initArr) => {
-  allData.forEach((item) => {
-    if (item.select && item.level == 4) {
-      initArr.push(item.id)
-    }
-    if (item.children && item.children.length > 0) {
-      filterSelectArr(item.children, initArr)
-    }
-  })
+// const filterSelectArr = (allData, initArr) => {
+//   allData.forEach((item) => {
+//     if (item.select && item.level == 4) {
+//       initArr.push(item.id)
+//     }
+//     if (item.children && item.children.length > 0) {
+//       filterSelectArr(item.children, initArr)
+//     }
+//   })
 
-  return initArr
+//   return initArr
+// }
+
+const getHasPermisstion = async () => {
+  let result = await reqAllPermisstion()
+  if (result.code == 200) {
+    PermisstionArr.value = result.data
+  }
 }
 
 //抽屉确定按钮的回调
 const handler = async () => {
   //职位的ID
   const roleId = RoleParams._id as number
+  console.log(roleId, 'roleId')
   //选中节点的ID
   let arr = tree.value.getCheckedKeys()
   //半选的ID
   let arr1 = tree.value.getHalfCheckedKeys()
   let permissionId = arr.concat(arr1)
+  console.log(permissionId, 'permissionId')
   //下发权限
   let result: RoleResponseData = await reqSetMenu(roleId, permissionId)
   if (result.code == 200) {
@@ -337,8 +353,6 @@ const handler = async () => {
     drawer.value = false
     //提示信息
     ElMessage({ type: 'success', message: '分配权限成功' })
-    //页面刷新
-    window.location.reload()
   }
 }
 
@@ -352,41 +366,10 @@ const removeRole = async (id: number) => {
   }
 }
 
-interface Tree {
-  id: string
-  label: string
-  children?: Tree[]
-}
-
 const defaultProps = {
   children: 'children', // 指定子节点字段名
-  label: 'label', // 指定节点显示文本字段名
+  label: 'name', // 指定节点显示文本字段名
 }
-
-const data: Tree[] = [
-  {
-    id: '68760303736a6368acd527f7',
-    label: 'Level one 1',
-    children: [
-      {
-        id: '68760303736a6368acd527f9',
-        label: 'Level two 1-1',
-        children: [
-          {
-            id: '68760303736a6368acd527f8',
-            label: 'Level three 1-1-1',
-          },
-          {
-            id: '68760303736a6368acd527f9',
-            label: 'Level three 1-1-2',
-          },
-        ],
-      },
-    ],
-  },
-]
-
-const selectArr = ref(['68760303736a6368acd527f8'])
 </script>
 
 <style scoped>

@@ -12,7 +12,7 @@ function buildTree(list, pid = null, level = 1) {
         code: item.code,
         level,
         pid: item.pid,
-        updateTime: item.updatedAt,
+        updateTime: item.updateTime,
         children: children.length ? children : undefined
       };
     });

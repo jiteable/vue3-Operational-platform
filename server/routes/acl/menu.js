@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const MenuController = require('../../controllers/acl/MenuController');
 
-// 获取角色菜单树
+// 获取角色菜单id
 router.get('/toAssign/:id', MenuController.toAssign);
 
 // 分配菜单权限

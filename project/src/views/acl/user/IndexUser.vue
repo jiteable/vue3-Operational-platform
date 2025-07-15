@@ -450,7 +450,7 @@ const confirmClick = async () => {
     return
   }
   let data: SetRoleData = {
-    userId: userParams.id as string,
+    userId: String(userParams.id),
     roleIdList: userRole.value,
   }
   //分配用户的职位

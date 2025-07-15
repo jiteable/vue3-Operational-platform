@@ -9,7 +9,7 @@ const API = {
   ADDROLE_URL: '/admin/acl/role/save',
   //更新已有的职位
   UPDATEROLE_URL: '/admin/acl/role/update',
-  //获取全部的菜单与按钮的数据
+  //获取全部的菜单与按钮的数据的id
   ALLMENU: '/admin/acl/menu/toAssign/',
   //给相应的职位分配权限
   SETMENU_URL: '/admin/acl/menu/doAssign/?',
@@ -29,9 +29,10 @@ export const reqAddOrUpdateRole = (data: RoleData) => {
     return request.post<unknown, RoleResponseData>(API.ADDROLE_URL, data)
   }
 }
-//获取全部菜单与按钮权限数据
+//获取全部菜单与按钮权限数据id
 export const reqAllMenuList = (roleId: number) =>
   request.get<unknown, MenuResponseData>(API.ALLMENU + roleId)
+
 //给相应的职位下发权限
 export const reqSetMenu = (roleId: number, permissionId: number[]) =>
   request.post<unknown, RoleResponseData>(API.SETMENU_URL + `roleId=${roleId}&permissionId=${permissionId}`)

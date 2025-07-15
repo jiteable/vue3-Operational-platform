@@ -7,7 +7,11 @@
   >
     <el-table-column label="名称" prop="name"></el-table-column>
     <el-table-column label="权限值" prop="code"></el-table-column>
-    <el-table-column label="修改时间" prop="updateTime"></el-table-column>
+    <el-table-column
+      label="修改时间"
+      prop="updateTime"
+      :formatter="tableFormatTime"
+    ></el-table-column>
     <el-table-column label="操作">
       <!-- row:即为已有的菜单对象|按钮的对象的数据 -->
       <template v-slot="{ row }">
@@ -75,21 +79,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 //引入获取菜单请求API
 import {
-  reqAllPermisstion,
   reqAddOrUpdateMenu,
+  reqAllPermisstion,
   reqRemoveMenu,
 } from '../../../api/acl/permission'
 //引入ts类型
+import { ElMessage } from 'element-plus'
 import type {
   MenuParams,
-  PermisstionResponseData,
-  PermisstionList,
   Permisstion,
+  PermisstionList,
+  PermisstionResponseData,
 } from '../../../api/acl/permission/type'
-import { ElMessage } from 'element-plus'
+import { formatTime as baseFormatTime } from '../../../utils/time'
+
+function tableFormatTime(row) {
+  return baseFormatTime(row.updatedAt || row.updateTime)
+}
+
 //存储菜单的数据
 let PermisstionArr = ref<PermisstionList>([])
 //控制对话框的显示与隐藏
@@ -110,6 +120,7 @@ const getHasPermisstion = async () => {
   let result: PermisstionResponseData = await reqAllPermisstion()
   if (result.code == 200) {
     PermisstionArr.value = result.data
+    console.log(PermisstionArr.value, 'PermisstionArr.value')
   }
 }
 
@@ -139,6 +150,7 @@ const updatePermisstion = (row: Permisstion) => {
 
 //确定按钮的回调
 const save = async () => {
+  console.log(PermisstionArr.value[0].updateTime, 'awdawdw')
   //发请求:新增子菜单|更新某一个已有的菜单的数据
   let result = await reqAddOrUpdateMenu(menuData)
   if (result.code == 200) {
