@@ -15,4 +15,4 @@ const menuSchema = new Schema({
   updateTime: { type: Date, default: Date.now },            // 更新时间
 });
 
-module.exports = mongoose.model('Menu', menuSchema);
+module.exports = mongoose.model('Menu', menuSchema, 'menus');

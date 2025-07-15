@@ -158,7 +158,7 @@
     </template>
   </el-drawer>
   <!-- 抽屉结构:用户某一个已有的账号进行职位分配 -->
-  <el-drawer v-model="drawer1">
+  <el-drawer v-model="drawer1" :show-close="false">
     <template #header>
       <h4>分配角色(职位)</h4>
     </template>
@@ -175,7 +175,7 @@
           >
             全选
           </el-checkbox>
-          <!-- 显示职位的的复选框 -->
+          <!-- 显示职位的的复选框  当选择了一个复选框,userRole数组中会添加一个id id为选择的复选框-->
           <el-checkbox-group
             v-model="userRole"
             @change="handleCheckedCitiesChange"
@@ -193,7 +193,7 @@
     </template>
     <template #footer>
       <div style="flex: auto">
-        <el-button @click="drawer1 = false">取消</el-button>
+        <el-button @click="changeDrawer1">取消</el-button>
         <el-button type="primary" @click="confirmClick">确定</el-button>
       </div>
     </template>
@@ -201,7 +201,7 @@
 </template>
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
-import { nextTick, onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, ref, watch } from 'vue'
 import {
   reqAddOrUpdateUser,
   reqAllRole,
@@ -339,7 +339,7 @@ const validatorUsername = (
   callBack: (error?: Error) => void,
 ) => {
   //用户名字|昵称,长度至少五位
-  if (value.trim().length >= 5) {
+  if (value.trim().length >= 3) {
     callBack()
   } else {
     callBack(new Error('用户名字至少五位'))
@@ -352,7 +352,7 @@ const validatorname = (
   callBack: (error?: Error) => void,
 ) => {
   //用户名字|昵称,长度至少五位
-  if (value.trim().length >= 5) {
+  if (value.trim().length >= 3) {
     callBack()
   } else {
     callBack(new Error('用户昵称至少五位'))
@@ -430,12 +430,17 @@ const handleCheckAllChange = (val: boolean) => {
   isIndeterminate.value = false
 }
 //顶部全部的复选框的change事件
-const handleCheckedCitiesChange = (value: number[]) => {
-  //顶部复选框的勾选数据
-  //代表:勾选上的项目个数与全部的职位个数相等，顶部的复选框勾选上
-  checkAll.value = value.length === allRole.value.length
-  //不确定的样式
-  isIndeterminate.value = value.length !== allRole.value.length
+const handleCheckedCitiesChange = (value: string[]) => {
+  if (value.length === 0) {
+    checkAll.value = false
+    isIndeterminate.value = false
+  } else if (value.length === allRole.value.length) {
+    checkAll.value = true
+    isIndeterminate.value = false
+  } else {
+    checkAll.value = false
+    isIndeterminate.value = true
+  }
 }
 //确定按钮的回调(分配职位)
 const confirmClick = async () => {
@@ -506,6 +511,23 @@ const reset = () => {
   // 重新获取数据
   getHasUser()
 }
+
+const changeDrawer1 = () => {
+  drawer1.value = false
+}
+
+watch(drawer1, () => {
+  if (userRole.value.length === 0) {
+    checkAll.value = false
+    isIndeterminate.value = false
+  } else if (userRole.value.length === allRole.value.length) {
+    checkAll.value = true
+    isIndeterminate.value = false
+  } else {
+    checkAll.value = false
+    isIndeterminate.value = true
+  }
+})
 </script>
 
 <style scoped>

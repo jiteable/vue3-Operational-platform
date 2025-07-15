@@ -75,7 +75,7 @@
           <el-popconfirm
             :title="`你确定要删除${row.roleName}?`"
             width="260px"
-            @confirm="removeRole(row.id)"
+            @confirm="removeRole(row._id)"
           >
             <template #reference>
               <el-button type="primary" size="small" icon="Delete">
@@ -125,7 +125,7 @@
     <template #default>
       <!-- 树形控件 -->
       <el-tree
-        ref="tree"
+        :ref="tree"
         :data="data"
         show-checkbox
         node-key="id"
@@ -133,6 +133,7 @@
         :default-checked-keys="selectArr"
         :props="defaultProps"
         highlight-current
+        v-model:checked-keys="selectArr"
       />
     </template>
     <template #footer>
@@ -236,7 +237,6 @@ const addRole = () => {
   //清空数据
   Object.assign(RoleParams, {
     roleName: '',
-    id: 0,
   })
   //清空上一次表单校验错误结果
   nextTick(() => {
@@ -353,7 +353,7 @@ const removeRole = async (id: number) => {
 }
 
 interface Tree {
-  id: number
+  id: string
   label: string
   children?: Tree[]
 }
@@ -365,56 +365,28 @@ const defaultProps = {
 
 const data: Tree[] = [
   {
-    id: 1,
+    id: '68760303736a6368acd527f7',
     label: 'Level one 1',
     children: [
       {
-        id: 4,
+        id: '68760303736a6368acd527f9',
         label: 'Level two 1-1',
         children: [
           {
-            id: 9,
+            id: '68760303736a6368acd527f8',
             label: 'Level three 1-1-1',
           },
           {
-            id: 10,
+            id: '68760303736a6368acd527f9',
             label: 'Level three 1-1-2',
           },
         ],
       },
     ],
   },
-  {
-    id: 2,
-    label: 'Level one 2',
-    children: [
-      {
-        id: 5,
-        label: 'Level two 2-1',
-      },
-      {
-        id: 6,
-        label: 'Level two 2-2',
-      },
-    ],
-  },
-  {
-    id: 3,
-    label: 'Level one 3',
-    children: [
-      {
-        id: 7,
-        label: 'Level two 3-1',
-      },
-      {
-        id: 8,
-        label: 'Level two 3-2',
-      },
-    ],
-  },
 ]
 
-const selectArr = ref([10, 6])
+const selectArr = ref(['68760303736a6368acd527f8'])
 </script>
 
 <style scoped>

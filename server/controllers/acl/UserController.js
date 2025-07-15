@@ -1,4 +1,5 @@
 const UserService = require('../../services/acl/UserService');
+const RoleModel = require('../../models/acl/role');
 
 const UserController = {
   // 获取用户列表
@@ -34,6 +35,9 @@ const UserController = {
     try {
       const userData = req.body;
       // 移除 id 字段，让 MongoDB 自动生成 _id
+
+      const viewerRole = await RoleModel.findOne({ roleName: '普通用户' });
+      userData.roleName = viewerRole.roleName;
       delete userData.id;
       await UserService.addUser(userData);
 

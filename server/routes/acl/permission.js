@@ -11,4 +11,6 @@ router.post('/save', PermissionController.saveOrUpdatePermission);
 // 删除菜单
 router.delete('/remove/:id', PermissionController.removePermission);
 
+router.put('/update', PermissionController.updatePermission)
+
 module.exports = router;

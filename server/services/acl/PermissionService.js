@@ -32,7 +32,16 @@ class PermissionService {
 
   // 更新菜单
   static async updatePermission(id, data) {
-    return await MenuModel.findByIdAndUpdate(id, data);
+    const mongoose = require('mongoose');
+    console.log('updatePermission 参数:', id, data);
+    console.log('typeof id:', typeof id);
+    console.log('isValidObjectId:', mongoose.Types.ObjectId.isValid(id));
+    const exist = await MenuModel.findById(id);
+    console.log('findById 查找结果:', exist);
+    const { name, code } = data;
+    const result = await MenuModel.findByIdAndUpdate(id, { name, code, updateTime: Date.now() }, { new: true });
+    console.log('findByIdAndUpdate 结果:', result);
+    return result;
   }
 
   // 删除菜单

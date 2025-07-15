@@ -29,6 +29,13 @@ class PermissionController {
       res.json({ code: 400, message: result.message });
     }
   }
+
+  static async updatePermission(req, res) {
+    const { id, name, code } = req.body;
+    console.log('updatePermission 参数:', id, name, code);
+    await PermissionService.updatePermission(id, { name, code });
+    res.json({ code: 200, message: '更新成功' });
+  }
 }
 
 module.exports = PermissionController;
