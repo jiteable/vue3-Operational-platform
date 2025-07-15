@@ -58,7 +58,7 @@ export const constantRoute = [
       },
       {
         path: 'menu',
-        component: () => import('@/views/acl/menu/IndexMenu.vue'),
+        component: () => import('@/views/acl/permisstion/IndexPermission.vue'),
         name: 'menu',
         meta: { title: '菜单管理', icon: 'Grid' }
       }

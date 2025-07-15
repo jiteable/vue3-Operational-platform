@@ -11,6 +11,6 @@ const UserType = {
   updateTime: { type: Date, default: Date.now }
 };
 
-const UserModel = mongoose.model('acl_user', new Schema(UserType, { timestamps: true }));
+const UserModel = mongoose.model('acl_user', new Schema(UserType));
 
 module.exports = UserModel; 

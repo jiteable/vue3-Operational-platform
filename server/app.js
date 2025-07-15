@@ -7,6 +7,8 @@ var logger = require('morgan');
 // 导入数据库配置
 require('./config/db.config');
 
+require('./models/acl/role');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/UserRouter');
 var trademarkRouter = require('./routes/product/trademark');
@@ -15,6 +17,8 @@ var categoryRouter = require('./routes/product/category');
 var spuRouter = require('./routes/product/spu');
 var userRouter = require('./routes/acl/user');
 var roleRouter = require('./routes/acl/role');
+var menuRouter = require('./routes/acl/menu');
+var permissionRouter = require('./routes/acl/permission');
 
 var app = express();
 
@@ -42,6 +46,8 @@ app.use('/admin/product', categoryRouter);
 app.use('/admin/product', spuRouter);
 app.use('/admin/acl', userRouter);
 app.use('/admin/acl/role', roleRouter);
+app.use('/admin/acl/menu', menuRouter);
+app.use('/admin/acl/permission', permissionRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

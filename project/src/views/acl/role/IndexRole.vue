@@ -26,7 +26,7 @@
     </el-button>
     <el-table border style="margin: 10px 0px" :data="allRole">
       <el-table-column type="index" align="center" label="#"></el-table-column>
-      <el-table-column label="ID" align="center" prop="id"></el-table-column>
+      <el-table-column label="ID" align="center" prop="_id"></el-table-column>
       <el-table-column
         label="职位名称"
         align="center"
@@ -100,7 +100,7 @@
   <!-- 添加职位与更新已有职位的结构:对话框 -->
   <el-dialog
     v-model="dialogVisite"
-    :title="RoleParams.id ? '更新职位' : '添加职位'"
+    :title="RoleParams._id ? '更新职位' : '添加职位'"
   >
     <el-form :model="RoleParams" :rules="rules" ref="form">
       <el-form-item label="职位名称" prop="roleName">
@@ -126,12 +126,13 @@
       <!-- 树形控件 -->
       <el-tree
         ref="tree"
-        :data="menuArr"
+        :data="data"
         show-checkbox
         node-key="id"
         default-expand-all
         :default-checked-keys="selectArr"
         :props="defaultProps"
+        highlight-current
       />
     </template>
     <template #footer>
@@ -151,7 +152,7 @@ import {
   reqAllMenuList,
   reqAllRoleList,
   reqRemoveRole,
-  reqSetPermisstion,
+  reqSetMenu,
 } from '../../../api/acl/role'
 import type {
   MenuList,
@@ -185,7 +186,7 @@ let RoleParams = reactive<RoleData>({
   roleName: '',
 })
 //准备一个数组:数组用于存储勾选的节点的ID(四级的)
-let selectArr = ref<number[]>([])
+// let selectArr = ref<number[]>([])
 //定义数组存储用户权限的数据
 let menuArr = ref<MenuList>([])
 //获取tree组件实例
@@ -276,12 +277,12 @@ const save = async () => {
     //提示文字
     ElMessage({
       type: 'success',
-      message: RoleParams.id ? '更新成功' : '添加成功',
+      message: RoleParams._id ? '更新成功' : '添加成功',
     })
     //对话框显示
     dialogVisite.value = false
     //再次获取全部的已有的职位
-    getHasRole(RoleParams.id ? pageNo.value : 1)
+    getHasRole(RoleParams._id ? pageNo.value : 1)
   }
 }
 
@@ -293,17 +294,19 @@ const setPermisstion = async (row: RoleData) => {
   //收集当前要分类权限的职位的数据
   Object.assign(RoleParams, row)
   //根据职位获取权限的数据
-  let result: MenuResponseData = await reqAllMenuList(RoleParams.id as number)
+  let result: MenuResponseData = await reqAllMenuList(RoleParams._id as number)
   if (result.code == 200) {
     menuArr.value = result.data
     selectArr.value = filterSelectArr(menuArr.value, [])
+  } else {
+    console.log(result)
   }
 }
 //树形控件的测试数据
-const defaultProps = {
-  children: 'children',
-  label: 'name',
-}
+// const defaultProps = {
+//   children: 'children',
+//   label: 'name',
+// }
 
 const filterSelectArr = (allData, initArr) => {
   allData.forEach((item) => {
@@ -321,14 +324,14 @@ const filterSelectArr = (allData, initArr) => {
 //抽屉确定按钮的回调
 const handler = async () => {
   //职位的ID
-  const roleId = RoleParams.id as number
+  const roleId = RoleParams._id as number
   //选中节点的ID
   let arr = tree.value.getCheckedKeys()
   //半选的ID
   let arr1 = tree.value.getHalfCheckedKeys()
   let permissionId = arr.concat(arr1)
   //下发权限
-  let result: RoleResponseData = await reqSetPermisstion(roleId, permissionId)
+  let result: RoleResponseData = await reqSetMenu(roleId, permissionId)
   if (result.code == 200) {
     //抽屉关闭
     drawer.value = false
@@ -348,6 +351,70 @@ const removeRole = async (id: number) => {
     getHasRole(allRole.value.length > 1 ? pageNo.value : pageNo.value - 1)
   }
 }
+
+interface Tree {
+  id: number
+  label: string
+  children?: Tree[]
+}
+
+const defaultProps = {
+  children: 'children', // 指定子节点字段名
+  label: 'label', // 指定节点显示文本字段名
+}
+
+const data: Tree[] = [
+  {
+    id: 1,
+    label: 'Level one 1',
+    children: [
+      {
+        id: 4,
+        label: 'Level two 1-1',
+        children: [
+          {
+            id: 9,
+            label: 'Level three 1-1-1',
+          },
+          {
+            id: 10,
+            label: 'Level three 1-1-2',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    label: 'Level one 2',
+    children: [
+      {
+        id: 5,
+        label: 'Level two 2-1',
+      },
+      {
+        id: 6,
+        label: 'Level two 2-2',
+      },
+    ],
+  },
+  {
+    id: 3,
+    label: 'Level one 3',
+    children: [
+      {
+        id: 7,
+        label: 'Level two 3-1',
+      },
+      {
+        id: 8,
+        label: 'Level two 3-2',
+      },
+    ],
+  },
+]
+
+const selectArr = ref([10, 6])
 </script>
 
 <style scoped>
