@@ -80,7 +80,17 @@
     <template #header="{ titleId, titleClass }">
       <h4 :id="titleId" :class="titleClass">设置</h4>
     </template>
-    <div>主题颜色</div>
+    <div class="switch-container">
+      <div>主题颜色切换</div>
+      <div class="switch-item">
+        <el-color-picker
+          v-model="color"
+          show-alpha
+          :predefine="['blue']"
+          @change="setColor"
+        />
+      </div>
+    </div>
     <div class="switch-container">
       <div>暗色主题切换</div>
       <div class="switch-item">
@@ -120,6 +130,8 @@ const visible = ref(false)
 const value1 = ref(false)
 
 const username = ref('admin') // 可替换为实际用户名
+
+const color = ref()
 
 const secondLevelPath = computed(() => {
   // 假设 path 结构为 /parent/child
@@ -173,6 +185,12 @@ const changeDark = () => {
   } else {
     html.classList.remove('dark')
   }
+}
+
+const setColor = () => {
+  const html = document.documentElement
+  // console.log(html.style)
+  html.style.setProperty('--el-color-primary', color.value)
 }
 </script>
 
