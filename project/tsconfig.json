@@ -3,6 +3,8 @@
   "compilerOptions": {
     "types": ["element-plus/global"],
     "composite": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "references": [
     { "path": "./tsconfig.app.json" },
