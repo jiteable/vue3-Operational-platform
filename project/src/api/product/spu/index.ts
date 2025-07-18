@@ -66,7 +66,7 @@ export const reqAllSaleAttr = () =>
 //data:即为新增的SPU|或者已有的SPU对象
 export const reqAddOrUpdateSpu = (data: SpuData) => {
   //如果SPU对象拥有ID,更新已有的SPU
-  if (data.id) {
+  if (data._id) {
     return request.post<BaseResponseData, BaseResponseData>(API.UPDATESPU_URL, data)
   } else {
     return request.post<BaseResponseData, BaseResponseData>(API.ADDSPU_URL, data)

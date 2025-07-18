@@ -9,10 +9,10 @@
     <el-form-item label="SPU品牌">
       <el-select v-model="SpuParams.tmId">
         <el-option
-          v-for="item in allTradeMark"
-          :key="item.id"
+          v-for="(item, index) in allTradeMark"
+          :key="index"
           :label="item.tmName"
-          :value="item.id"
+          :value="item._id"
         ></el-option>
       </el-select>
     </el-form-item>
@@ -208,9 +208,9 @@ const initHasSpuData = async (spu: SpuData) => {
   //获取全部品牌的数据
   let result: AllTradeMark = await reqAllTradeMark()
   //获取某一个品牌旗下全部售卖商品的图片
-  let result1: SpuHasImg = await reqSpuImageList(spu.id as number)
+  let result1: SpuHasImg = await reqSpuImageList(spu._id as number)
   //获取已有的SPU销售属性的数据
-  let result2: SaleAttrResponseData = await reqSpuHasSaleAttr(spu.id as number)
+  let result2: SaleAttrResponseData = await reqSpuHasSaleAttr(spu._id as number)
   //获取整个项目全部SPU的销售属性
   let result3: HasSaleAttrResponseData = await reqAllSaleAttr()
   //存储全部品牌的数据
@@ -361,17 +361,17 @@ const save = async () => {
   if (result.code == 200) {
     ElMessage({
       type: 'success',
-      message: SpuParams.value.id ? '更新成功' : '添加成功',
+      message: SpuParams.value._id ? '更新成功' : '添加成功',
     })
     //通知父组件切换场景为0
     $emit('changeScene', {
       flag: 0,
-      params: SpuParams.value.id ? 'update' : 'add',
+      params: SpuParams.value._id ? 'update' : 'add',
     })
   } else {
     ElMessage({
       type: 'success',
-      message: SpuParams.value.id ? '更新成功' : '添加成功',
+      message: SpuParams.value._id ? '更新成功' : '添加成功',
     })
   }
 }
@@ -396,7 +396,10 @@ const initAddSpu = async (c3Id: number | string) => {
   SpuParams.value.category3Id = c3Id
   //获取全部品牌的数据
   let result: AllTradeMark = await reqAllTradeMark()
+
   let result1: HasSaleAttrResponseData = await reqAllSaleAttr()
+  console.log(result, '11111111')
+  console.log(result1, '232222222222')
   //存储数据
   allTradeMark.value = result.data
   allSaleAttr.value = result1.data

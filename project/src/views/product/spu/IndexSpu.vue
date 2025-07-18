@@ -180,7 +180,7 @@ const addSku = (row: SpuData) => {
 const findSku = async (row: SpuData) => {
   // TODO: 实现查看SKU列表的逻辑
 
-  const res: SkuInfoData = await reqSkuList(row.id)
+  const res: SkuInfoData = await reqSkuList(row._id)
   if (res.code == 200) {
     skuArr.value = res.data
     show.value = true
@@ -188,8 +188,9 @@ const findSku = async (row: SpuData) => {
 }
 
 const deleteSpu = async (row: SpuData) => {
+  console.log(row, 'awdaw')
   // TODO: 实现删除SPU的逻辑
-  const res = await reqRemoveSpu(row.id)
+  const res = await reqRemoveSpu(row._id)
   if (res.code == 200) {
     ElMessage.success('删除成功')
     getHasSpu(records.value.length > 1 ? pageNo.value : pageNo.value - 1)
@@ -205,6 +206,9 @@ const updateSpu = async (row: SpuData) => {
 
 const changeScene = (val: { flag: number; params: string }) => {
   scene.value = val.flag
+  if (val.flag === 0) {
+    getHasSpu()
+  }
 }
 
 const changeSize = () => {

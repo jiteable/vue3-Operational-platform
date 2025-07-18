@@ -18,7 +18,7 @@ const SkuService = {
   },
   delete: async (skuId) => {
     return SkuModel.findByIdAndDelete(skuId);
-  }
+  },
 };
 
 module.exports = SkuService; 

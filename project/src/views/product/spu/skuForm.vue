@@ -246,7 +246,7 @@ const handleCancel = () => {
 
 const initSkuData = async (c1Id: string, c2Id: string, row: SpuData) => {
   skuParams.category3Id = row.category3Id
-  skuParams.spuId = row.id
+  skuParams.spuId = row._id
   skuParams.tmId = row.tmId
   skuParams.skuName = row.spuName
   skuParams.skuDesc = row.description
@@ -254,8 +254,8 @@ const initSkuData = async (c1Id: string, c2Id: string, row: SpuData) => {
   try {
     const result: AttrResponseData = await reqAttr(c1Id, c2Id, row.category3Id)
 
-    const result2: SaleAttrResponseData = await reqSpuHasSaleAttr(row.id)
-    const result3: SpuHasImg = await reqSpuImageList(row.id)
+    const result2: SaleAttrResponseData = await reqSpuHasSaleAttr(row._id)
+    const result3: SpuHasImg = await reqSpuImageList(row._id)
 
     if (result.code === 200) {
       attrList.value = result.data

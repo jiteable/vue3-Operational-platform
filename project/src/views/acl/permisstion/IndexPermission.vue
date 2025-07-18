@@ -56,16 +56,18 @@
   >
     <!-- 表单组件:收集新增与已有的菜单的数据 -->
     <el-form>
-      <el-form-item label="名称">
+      <el-form-item label="名称" required>
         <el-input
           placeholder="请你输入菜单名称"
           v-model="menuData.name"
+          clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="权限">
+      <el-form-item label="权限" required>
         <el-input
           placeholder="请你输入权限数值"
           v-model="menuData.code"
+          clearable
         ></el-input>
       </el-form-item>
     </el-form>
@@ -151,6 +153,23 @@ const updatePermisstion = (row: Permisstion) => {
 //确定按钮的回调
 const save = async () => {
   console.log(PermisstionArr.value[0].updateTime, 'awdawdw')
+
+  // 前端数据验证
+  if (!menuData.name || menuData.name.trim() === '') {
+    ElMessage({
+      type: 'error',
+      message: '菜单名称不能为空',
+    })
+    return
+  }
+  if (!menuData.code || menuData.code.trim() === '') {
+    ElMessage({
+      type: 'error',
+      message: '权限标识不能为空',
+    })
+    return
+  }
+
   //发请求:新增子菜单|更新某一个已有的菜单的数据
   let result = await reqAddOrUpdateMenu(menuData)
   if (result.code == 200) {

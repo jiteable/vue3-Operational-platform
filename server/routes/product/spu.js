@@ -2,11 +2,16 @@ const express = require('express');
 const router = express.Router();
 const SpuController = require('../../controllers/product/SpuController');
 
-// 获取 SPU 列表 - GET /admin/product/:page/:limit?category3Id=xxx
-router.get('/:page/:limit', SpuController.getSpuList);
+
+// 获取 SKU 列表 - GET /admin/product/findBySpuId/:spuId
+router.get('/findBySpuId/:spuId', SpuController.getSkuList);
 
 // 获取所有品牌 - GET /admin/product/baseTrademark/getTrademarkList
 router.get('/baseTrademark/getTrademarkList', SpuController.getAllTrademarks);
+
+
+// 获取 SPU 列表 - GET /admin/product/:page/:limit?category3Id=xxx
+router.get('/:page/:limit', SpuController.getSpuList);
 
 // 获取 SPU 图片列表 - GET /admin/product/spuImageList/:spuId
 router.get('/spuImageList/:spuId', SpuController.getSpuImages);
@@ -26,8 +31,6 @@ router.post('/updateSpuInfo', SpuController.addOrUpdateSpu);
 // 添加 SKU - POST /admin/product/saveSkuInfo
 router.post('/saveSkuInfo', SpuController.addSku);
 
-// 获取 SKU 列表 - GET /admin/product/findBySpuId/:spuId
-router.get('/findBySpuId/:spuId', SpuController.getSkuList);
 
 // 删除 SPU - DELETE /admin/product/deleteSpu/:spuId
 router.delete('/deleteSpu/:spuId', SpuController.deleteSpu);

@@ -8,7 +8,7 @@ export interface ResponseData {
 //SPU数据的ts类型:需要修改
 export interface SpuData {
   category3Id: string | number
-  id?: number
+  _id?: number
   spuName: string
   tmId: number | string
   description: string
@@ -31,7 +31,7 @@ export interface HasSpuResponseData extends ResponseData {
 
 //品牌数据的TS类型
 export interface Trademark {
-  id: number
+  _id: number
   tmName: string
   logoUrl: string
 }
